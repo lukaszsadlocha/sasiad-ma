@@ -19,4 +19,7 @@ public record Error(string Code, string Message)
     
     public static Error Forbidden(string message = "Forbidden access") =>
         new("Error.Forbidden", message);
+    
+    public static Error Unexpected(string message = "Unexpected Error") =>
+        new("Error.Unexpected", message);
 }

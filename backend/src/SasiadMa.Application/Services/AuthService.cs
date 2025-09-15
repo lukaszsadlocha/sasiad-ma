@@ -1,4 +1,5 @@
 using SasiadMa.Application.DTOs.Auth;
+using SasiadMa.Application.DTOs.User;
 using SasiadMa.Application.Interfaces;
 using SasiadMa.Core.Common;
 using SasiadMa.Core.Entities;
@@ -36,19 +37,19 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailAsync(request.Email);
             if (!userResult.IsSuccess)
             {
-                return Result<LoginResponse>.Failure(Error.NotFound("Invalid email or password"));
+                return Result<LoginResponse>.Failure(Error.NotFound("User", "email"));
             }
 
             var user = userResult.Value;
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return Result<LoginResponse>.Failure(Error.Validation("Invalid email or password"));
+                return Result<LoginResponse>.Failure(Error.Validation("password", "Invalid email or password"));
             }
 
             if (!user.IsActive)
             {
-                return Result<LoginResponse>.Failure(Error.Validation("Account is deactivated"));
+                return Result<LoginResponse>.Failure(Error.Validation("isActive", "Account is deactivated"));
             }
 
             // Update last login
@@ -61,14 +62,14 @@ public class AuthService : IAuthService
             var response = new LoginResponse
             {
                 User = MapToAuthUser(user),
-                Token = token,
+                AccessToken = token,
                 RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(7).ToString("O")
+                ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
             return Result<LoginResponse>.Success(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Result<LoginResponse>.Failure(Error.Unexpected("An error occurred during login"));
         }
@@ -122,31 +123,31 @@ public class AuthService : IAuthService
             var response = new LoginResponse
             {
                 User = MapToAuthUser(createResult.Value),
-                Token = token,
+                AccessToken = token,
                 RefreshToken = refreshToken,
-                ExpiresAt = DateTime.UtcNow.AddDays(7).ToString("O")
+                ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
             return Result<LoginResponse>.Success(response);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Result<LoginResponse>.Failure(Error.Unexpected("An error occurred during registration"));
         }
     }
 
-    public async Task<Result<LoginResponse>> GoogleLoginAsync(GoogleLoginRequest request)
+    public Task<Result<LoginResponse>> GoogleLoginAsync(GoogleLoginRequest request)
     {
         // This would integrate with Google OAuth
         // For now, return not implemented
-        return Result<LoginResponse>.Failure(Error.Validation("Google login not yet implemented"));
+        return Task.FromResult(Result<LoginResponse>.Failure(Error.Validation("provider", "Google login not yet implemented")));
     }
 
-    public async Task<Result<LoginResponse>> RefreshTokenAsync(string refreshToken)
+    public Task<Result<LoginResponse>> RefreshTokenAsync(string refreshToken)
     {
         // This would validate and refresh the token
         // For now, return not implemented
-        return Result<LoginResponse>.Failure(Error.Validation("Token refresh not yet implemented"));
+        return Task.FromResult(Result<LoginResponse>.Failure(Error.Validation("refreshToken", "Token refresh not yet implemented")));
     }
 
     public async Task<Result<bool>> ConfirmEmailAsync(string token)
@@ -156,7 +157,7 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailConfirmationTokenAsync(token);
             if (!userResult.IsSuccess)
             {
-                return Result<bool>.Failure(Error.NotFound("Invalid confirmation token"));
+                return Result<bool>.Failure(Error.NotFound("User", "token"));
             }
 
             var user = userResult.Value;
@@ -169,7 +170,7 @@ public class AuthService : IAuthService
                 ? Result<bool>.Success(true) 
                 : Result<bool>.Failure(updateResult.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Result<bool>.Failure(Error.Unexpected("An error occurred during email confirmation"));
         }
@@ -182,13 +183,13 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailAsync(email);
             if (!userResult.IsSuccess)
             {
-                return Result<bool>.Failure(Error.NotFound("User not found"));
+                return Result<bool>.Failure(Error.NotFound("User", "User not found"));
             }
 
             var user = userResult.Value;
             if (user.IsEmailConfirmed)
             {
-                return Result<bool>.Failure(Error.Validation("Email is already confirmed"));
+                return Result<bool>.Failure(Error.Validation(nameof(email),"Email is already confirmed"));
             }
 
             user.EmailConfirmationToken = Guid.NewGuid().ToString();
@@ -201,7 +202,7 @@ public class AuthService : IAuthService
 
             return emailResult;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Result<bool>.Failure(Error.Unexpected("An error occurred while resending confirmation email"));
         }
@@ -235,17 +236,23 @@ public class AuthService : IAuthService
         return Guid.NewGuid().ToString();
     }
 
-    private AuthUser MapToAuthUser(User user)
+    private UserDto MapToAuthUser(User user)
     {
-        return new AuthUser
+        return new UserDto
         {
-            Id = user.Id.ToString(),
+            Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email.Value,
             ProfileImageUrl = user.ProfileImageUrl,
+            Bio = user.Bio,
+            PhoneNumber = user.PhoneNumber,
+            IsEmailConfirmed = user.IsEmailConfirmed,
             Role = user.Role.ToString(),
-            IsEmailConfirmed = user.IsEmailConfirmed
+            ReputationScore = user.Reputation.Value,
+            IsActive = user.IsActive,
+            LastLoginAt = user.LastLoginAt,
+            CreatedAt = user.CreatedAt
         };
     }
 }

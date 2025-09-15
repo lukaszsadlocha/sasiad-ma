@@ -1,3 +1,5 @@
+using SasiadMa.Application.DTOs.User;
+
 namespace SasiadMa.Application.DTOs.Auth;
 
 public class LoginResponse

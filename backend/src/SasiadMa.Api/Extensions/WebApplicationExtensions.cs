@@ -1,3 +1,5 @@
+using SasiadMa.Api.Endpoints;
+
 namespace SasiadMa.Api.Extensions;
 
 public static class WebApplicationExtensions

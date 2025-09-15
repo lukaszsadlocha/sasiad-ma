@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(npm run build:*)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(dotnet build)",
+      "Bash(dotnet run:*)",
+      "Bash(npm run dev:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet build:*)"
     ],
     "deny": [],
     "ask": []
