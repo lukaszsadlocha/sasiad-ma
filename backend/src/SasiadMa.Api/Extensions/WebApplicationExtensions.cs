@@ -7,11 +7,9 @@ public static class WebApplicationExtensions
     public static WebApplication UseApiMiddleware(this WebApplication app)
     {
         // Configure the HTTP request pipeline
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        // Enable Swagger in all environments for now (development setup)
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         app.UseHttpsRedirection();
         app.UseCors();

@@ -8,7 +8,12 @@
       "Bash(npm run dev:*)",
       "Bash(dotnet new:*)",
       "Bash(dotnet add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(timeout 10 dotnet run --project src/SasiadMa.Api)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(cmd //c:*)"
     ],
     "deny": [],
     "ask": []

@@ -9,10 +9,10 @@ public static class ApplicationServiceExtensions
     {
         // Register application services
         services.AddScoped<IAuthService, AuthService>();
-        
+        services.AddScoped<ICommunityService, CommunityService>();
+
         // Other services will be added as they are implemented
         // services.AddScoped<IUserService, UserService>();
-        // services.AddScoped<ICommunityService, CommunityService>();
         // services.AddScoped<IItemService, ItemService>();
         // services.AddScoped<IBorrowService, BorrowService>();
         // services.AddScoped<INotificationService, NotificationService>();
