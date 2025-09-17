@@ -11,9 +11,9 @@ public static class InfrastructureServiceExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        // Add DbContext
+        // Add DbContext with InMemory database
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseInMemoryDatabase("SasiadMaInMemoryDb"));
 
         // Register repositories
         services.AddScoped<IUserRepository, UserRepository>();
