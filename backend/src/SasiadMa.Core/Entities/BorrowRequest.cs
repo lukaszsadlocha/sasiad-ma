@@ -47,15 +47,7 @@ public class BorrowRequest : BaseEntity
     {
         return Status == BorrowStatus.Active;
     }
-
-    public bool IsOverdue()
-    {
-        if (Status != BorrowStatus.Active) return false;
-        if (ActualStartDate == null) return false;
-        
-        var expectedEndDate = RequestedEndDate;
-        return DateTime.UtcNow > expectedEndDate;
-    }
+    
 
     public void Approve(string? responseMessage = null)
     {

@@ -50,7 +50,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
           <h3 className="text-lg font-semibold text-gray-900 truncate">
             {community.name}
           </h3>
-          {showActions && community.isAdmin && (
+          {showActions && (
             <button
               onClick={handleManageCommunity}
               className="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -69,25 +69,25 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
           <div className="flex items-center text-sm text-gray-500">
             <Users className="h-4 w-4 mr-2" />
             <span>
-              {community.memberCount || 0} member{(community.memberCount || 0) !== 1 ? 's' : ''}
+              {community.activeMembersCount || 0} member{(community.activeMembersCount || 0) !== 1 ? 's' : ''}
             </span>
           </div>
 
-          {community.location && (
+          {community.address && (
             <div className="flex items-center text-sm text-gray-500">
               <MapPin className="h-4 w-4 mr-2" />
-              <span className="truncate">{community.location}</span>
+              <span className="truncate">{community.address}</span>
             </div>
           )}
         </div>
 
         <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
           <span>
-            Joined {formatters.timeAgo(community.joinedAt || community.createdAt)}
+            Created {formatters.timeAgo(community.createdAt)}
           </span>
-          {community.itemCount !== undefined && (
-            <span>{community.itemCount} items</span>
-          )}
+          <span>
+            {community.isPublic ? 'Public' : 'Private'}
+          </span>
         </div>
       </div>
     </div>

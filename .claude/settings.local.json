@@ -13,7 +13,12 @@
       "Bash(curl:*)",
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
-      "Bash(cmd //c:*)"
+      "Bash(cmd //c:*)",
+      "Bash(psql:*)",
+      "Bash(pg_config:*)",
+      "Bash(docker:*)",
+      "Bash(dotnet ef:*)",
+      "Bash(dotnet tool install:*)"
     ],
     "deny": [],
     "ask": []

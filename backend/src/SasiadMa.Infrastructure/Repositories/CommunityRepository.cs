@@ -73,9 +73,21 @@ public class CommunityRepository : ICommunityRepository
         throw new NotImplementedException();
     }
 
-    public Task<Result<IEnumerable<Community>>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Community>>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var communities = await _context.Communities
+                .Where(c => _context.CommunityMembers
+                    .Any(cm => cm.UserId == userId && cm.CommunityId == c.Id && cm.IsActive))
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Community>>.Success(communities);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Community>>.Failure(Error.Unexpected("An error occurred while retrieving user communities"));
+        }
     }
 
     public Task<Result<IEnumerable<Community>>> GetPublicCommunitiesAsync(CancellationToken cancellationToken = default)
@@ -88,9 +100,40 @@ public class CommunityRepository : ICommunityRepository
         throw new NotImplementedException();
     }
 
-    public Task<Result<CommunityMember>> AddMemberAsync(Guid communityId, Guid userId, bool isAdmin = false, CancellationToken cancellationToken = default)
+    public async Task<Result<CommunityMember>> AddMemberAsync(Guid communityId, Guid userId, bool isAdmin = false, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Check if user is already a member
+            var existingMembership = await _context.CommunityMembers
+                .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == userId, cancellationToken);
+
+            if (existingMembership != null)
+            {
+                return Result<CommunityMember>.Failure(Error.Validation("membership", "User is already a member of this community"));
+            }
+
+            var membership = new CommunityMember
+            {
+                Id = Guid.NewGuid(),
+                CommunityId = communityId,
+                UserId = userId,
+                IsAdmin = isAdmin,
+                IsActive = true,
+                JoinedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            _context.CommunityMembers.Add(membership);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Result<CommunityMember>.Success(membership);
+        }
+        catch (Exception)
+        {
+            return Result<CommunityMember>.Failure(Error.Unexpected("An error occurred while adding member to community"));
+        }
     }
 
     public Task<Result> RemoveMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default)

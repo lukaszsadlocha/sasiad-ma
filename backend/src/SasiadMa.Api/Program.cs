@@ -44,17 +44,17 @@ builder.Services.AddCors(options =>
 });
 
 // Add custom services
-try
-{
-    builder.Services.AddApplicationServices();
-    builder.Services.AddInfrastructureServices(builder.Configuration);
-}
-catch
-{
-    // Continue without database for now
-}
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<SasiadMa.Infrastructure.Data.ApplicationDbContext>();
+    await SasiadMa.Infrastructure.Data.DatabaseSeeder.SeedAsync(context);
+}
 
 // Configure the HTTP request pipeline
 app.UseApiMiddleware();

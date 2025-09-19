@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SasiadMa.Core.Common;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
+using SasiadMa.Core.ValueObjects;
 using SasiadMa.Infrastructure.Data;
 
 namespace SasiadMa.Infrastructure.Repositories;
@@ -60,28 +61,113 @@ public class ItemRepository : IItemRepository
         }
     }
 
-    public Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var item = await _context.Items.FindAsync(new object[] { id }, cancellationToken);
+            if (item == null)
+            {
+                return Result<bool>.Failure(Error.NotFound("Item", id.ToString()));
+            }
+
+            // Soft delete - set IsActive to false
+            item.IsActive = false;
+            item.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting item"));
+        }
     }
 
-    public Task<Result<IEnumerable<Item>>> GetByCommunityIdAsync(Guid communityId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Item>>> GetByCommunityIdAsync(Guid communityId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var items = await _context.Items
+                .Where(i => i.CommunityId == communityId)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Item>>.Success(items);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving items by community"));
+        }
     }
 
-    public Task<Result<IEnumerable<Item>>> GetByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Item>>> GetByOwnerIdAsync(Guid ownerId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var items = await _context.Items
+                .Where(i => i.OwnerId == ownerId)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Item>>.Success(items);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving items by owner"));
+        }
     }
 
-    public Task<Result<IEnumerable<Item>>> SearchAsync(string searchTerm, Guid? communityId = null, string? category = null, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Item>>> SearchAsync(string searchTerm, Guid? communityId = null, string? category = null, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var query = _context.Items.AsQueryable();
+
+            // Filter by search term in name or description
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(i => i.Name.Contains(searchTerm) || i.Description.Contains(searchTerm));
+            }
+
+            // Filter by community if specified
+            if (communityId.HasValue)
+            {
+                query = query.Where(i => i.CommunityId == communityId.Value);
+            }
+
+            // Filter by category if specified
+            if (!string.IsNullOrWhiteSpace(category) && ItemCategory.TryGetByCode(category, out var itemCategory))
+            {
+                query = query.Where(i => i.Category == itemCategory);
+            }
+
+            // Only return active items
+            query = query.Where(i => i.IsActive);
+
+            var items = await query.ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Item>>.Success(items);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while searching items"));
+        }
     }
 
-    public Task<Result<IEnumerable<Item>>> GetAvailableItemsAsync(Guid communityId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Item>>> GetAvailableItemsAsync(Guid communityId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var items = await _context.Items
+                .Where(i => i.CommunityId == communityId &&
+                           i.IsActive &&
+                           i.IsAvailableForBorrow)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Item>>.Success(items);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving available items"));
+        }
     }
 }

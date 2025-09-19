@@ -2,35 +2,48 @@ import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { Users, Package, Bell, Plus, TrendingUp } from 'lucide-react';
+import { useApiQuery } from '../hooks/useApi';
+import { dashboardService } from '../services/dashboardService';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
 
+  const {
+    data: dashboardStats,
+    isLoading: statsLoading,
+    error: statsError
+  } = useApiQuery(
+    ['dashboard-stats'],
+    dashboardService.getStats,
+    { refetchOnWindowFocus: true }
+  );
+
   const stats = [
     {
       name: 'Communities',
-      value: '2',
+      value: dashboardStats?.communitiesCount?.toString() || '0',
       icon: Users,
       color: 'bg-blue-500',
       href: '/communities'
     },
     {
       name: 'Your Items',
-      value: '5',
+      value: dashboardStats?.itemsCount?.toString() || '0',
       icon: Package,
       color: 'bg-green-500',
       href: '/items'
     },
     {
       name: 'Active Borrows',
-      value: '1',
+      value: dashboardStats?.activeBorrowsCount?.toString() || '0',
       icon: TrendingUp,
       color: 'bg-purple-500',
       href: '/items'
     },
     {
       name: 'Notifications',
-      value: '3',
+      value: dashboardStats?.unreadNotificationsCount?.toString() || '0',
       icon: Bell,
       color: 'bg-yellow-500',
       href: '/notifications'
@@ -60,6 +73,29 @@ const DashboardPage: React.FC = () => {
       color: 'bg-purple-500'
     }
   ];
+
+  if (statsLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (statsError) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Unable to load dashboard
+          </h2>
+          <p className="text-gray-600">
+            Please try refreshing the page
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

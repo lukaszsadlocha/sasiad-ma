@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Code/sasiad-ma/**)",
+      "Bash(dotnet ef:*)",
+      "Bash(dotnet build)",
+      "Bash(dotnet run:*)",
+      "Bash(curl:*)",
+      "Bash(tasklist)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -3,8 +3,7 @@ import type { Notification, CreateNotificationRequest } from '../types/notificat
 
 export const notificationService = {
   getAll: async (): Promise<Notification[]> => {
-    const response = await api.get<Notification[]>('/notifications');
-    return response.data;
+    return await api.get<Notification[]>('/notifications');
   },
 
   getUnread: async (): Promise<Notification[]> => {
@@ -39,8 +38,7 @@ export const notificationService = {
   },
 
   getSettings: async (): Promise<Record<string, boolean>> => {
-    const response = await api.get<Record<string, boolean>>('/notifications/settings');
-    return response.data;
+    return await api.get<Record<string, boolean>>('/notifications/settings');
   },
 
   updateSettings: async (settings: Record<string, boolean>): Promise<void> => {

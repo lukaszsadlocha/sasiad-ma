@@ -3,15 +3,19 @@ export interface Community {
   name: string;
   description: string;
   imageUrl?: string;
-  inviteCode: string;
+  invitationCode: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
   isPublic: boolean;
-  maxMembers?: number;
-  memberCount: number;
   isActive: boolean;
-  createdBy: string;
-  createdByName: string;
+  maxMembers: number;
+  activeMembersCount: number;
+  canAcceptNewMembers: boolean;
   createdAt: string;
-  updatedAt: string;
+  members: CommunityMember[];
 }
 
 export interface CreateCommunityRequest {
@@ -31,7 +35,7 @@ export interface UpdateCommunityRequest {
 }
 
 export interface JoinCommunityRequest {
-  inviteCode: string;
+  invitationCode: string;
 }
 
 export interface CommunityMember {
@@ -52,15 +56,17 @@ export interface CommunityDto {
   name: string;
   description: string;
   imageUrl?: string;
-  inviteCode: string;
+  invitationCode: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
   isPublic: boolean;
-  maxMembers?: number;
-  memberCount: number;
   isActive: boolean;
-  createdBy: string;
-  createdByName: string;
-  isUserMember: boolean;
-  isUserAdmin: boolean;
+  maxMembers: number;
+  activeMembersCount: number;
+  canAcceptNewMembers: boolean;
   createdAt: string;
-  members?: CommunityMember[];
+  members: CommunityMember[];
 }

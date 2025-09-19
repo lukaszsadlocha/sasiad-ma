@@ -39,6 +39,15 @@ public record ItemCategory
     {
         return GetAll().FirstOrDefault(c => c.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
     }
+    
+    public static bool TryGetByCode(string code, out ItemCategory? category)
+    {
+        category = null;
+        var itemcategory = GetByCode(code);
+        if(category == null) return false;
+        category = itemcategory;
+        return true;
+    }
 
     public static IEnumerable<ItemCategory> GetAll()
     {

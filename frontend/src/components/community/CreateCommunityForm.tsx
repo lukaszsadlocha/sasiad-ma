@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Upload, Users, MapPin, FileText } from 'lucide-react';
+import { Upload, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useApiMutation } from '../../hooks/useApi';
 import { communityService } from '../../services/communityService';
@@ -11,8 +11,8 @@ import LoadingSpinner from '../common/LoadingSpinner';
 interface CommunityFormData {
   name: string;
   description: string;
-  location: string;
-  isPrivate: boolean;
+  isPublic: boolean;
+  maxMembers?: number;
 }
 
 const CreateCommunityForm: React.FC = () => {
@@ -63,8 +63,9 @@ const CreateCommunityForm: React.FC = () => {
       const communityData: CreateCommunityRequest = {
         name: data.name,
         description: data.description,
-        location: data.location,
-        isPrivate: data.isPrivate,
+        isPublic: data.isPublic,
+        maxMembers: data.maxMembers,
+        imageUrl: imagePreview || undefined,
       };
 
       await createCommunityMutation.mutateAsync(communityData);
@@ -179,28 +180,35 @@ const CreateCommunityForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Location */}
+          {/* Max Members */}
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-              Location *
+            <label htmlFor="maxMembers" className="block text-sm font-medium text-gray-700">
+              Maximum Members (Optional)
             </label>
-            <div className="mt-1 relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <div className="mt-1">
               <input
-                {...register('location', {
-                  required: 'Location is required',
-                  minLength: {
-                    value: 5,
-                    message: 'Location must be at least 5 characters',
+                {...register('maxMembers', {
+                  valueAsNumber: true,
+                  min: {
+                    value: 1,
+                    message: 'Minimum 1 member required',
+                  },
+                  max: {
+                    value: 10000,
+                    message: 'Maximum 10,000 members allowed',
                   },
                 })}
-                type="text"
-                className="block w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="e.g. Downtown Austin, Oak Street Neighborhood"
+                type="number"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                placeholder="1000"
+                defaultValue={1000}
               />
-              {errors.location && (
-                <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>
+              {errors.maxMembers && (
+                <p className="mt-1 text-sm text-red-600">{errors.maxMembers.message}</p>
               )}
+              <p className="mt-1 text-sm text-gray-500">
+                Leave empty for default limit of 1000 members
+              </p>
             </div>
           </div>
 
@@ -209,17 +217,17 @@ const CreateCommunityForm: React.FC = () => {
             <div className="flex items-start">
               <div className="flex items-center h-5">
                 <input
-                  {...register('isPrivate')}
+                  {...register('isPublic')}
                   type="checkbox"
                   className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
                 />
               </div>
               <div className="ml-3 text-sm">
-                <label htmlFor="isPrivate" className="font-medium text-gray-700">
-                  Private Community
+                <label htmlFor="isPublic" className="font-medium text-gray-700">
+                  Public Community
                 </label>
                 <p className="text-gray-500">
-                  Only invited members can join this community. Otherwise, anyone with the invitation link can join.
+                  Anyone can discover and join this community. If unchecked, only people with invitation code can join.
                 </p>
               </div>
             </div>

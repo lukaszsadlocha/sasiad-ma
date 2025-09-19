@@ -31,14 +31,11 @@ public class Item : BaseEntity
     public virtual ICollection<ItemImage> Images { get; set; } = new List<ItemImage>();
     public virtual ICollection<BorrowRequest> BorrowRequests { get; set; } = new List<BorrowRequest>();
 
-    public bool IsAvailableForBorrow()
-    {
-        return Status == ItemStatus.Available && IsActive;
-    }
+    public bool IsAvailableForBorrow => Status == ItemStatus.Available && IsActive;
 
     public bool CanBeRequestedBy(Guid userId)
     {
-        return IsAvailableForBorrow() && OwnerId != userId;
+        return IsAvailableForBorrow && OwnerId != userId;
     }
 
     public ItemImage? GetPrimaryImage()

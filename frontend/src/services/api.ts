@@ -50,11 +50,11 @@ class ApiClient {
                 refreshToken,
               });
 
-              const { token } = response.data;
-              localStorage.setItem('authToken', token);
-              
+              const { accessToken } = response.data;
+              localStorage.setItem('authToken', accessToken);
+
               // Retry the original request with new token
-              originalRequest.headers.Authorization = `Bearer ${token}`;
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
               return this.client(originalRequest);
             }
           } catch (refreshError) {

@@ -47,38 +47,124 @@ public class BorrowRequestRepository : IBorrowRequestRepository
         }
     }
 
-    public Task<Result<BorrowRequest>> UpdateAsync(BorrowRequest borrowRequest, CancellationToken cancellationToken = default)
+    public async Task<Result<BorrowRequest>> UpdateAsync(BorrowRequest borrowRequest, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            borrowRequest.UpdatedAt = DateTime.UtcNow;
+            _context.BorrowRequests.Update(borrowRequest);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<BorrowRequest>.Success(borrowRequest);
+        }
+        catch (Exception)
+        {
+            return Result<BorrowRequest>.Failure(Error.Unexpected("An error occurred while updating borrow request"));
+        }
     }
 
-    public Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var borrowRequest = await _context.BorrowRequests.FindAsync(new object[] { id }, cancellationToken);
+            if (borrowRequest == null)
+            {
+                return Result<bool>.Failure(Error.NotFound("BorrowRequest", id.ToString()));
+            }
+
+            // Instead of hard delete, cancel the request
+            borrowRequest.Status = BorrowStatus.Cancelled;
+            borrowRequest.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting borrow request"));
+        }
     }
 
-    public Task<Result<IEnumerable<BorrowRequest>>> GetByBorrowerIdAsync(Guid borrowerId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<BorrowRequest>>> GetByBorrowerIdAsync(Guid borrowerId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var requests = await _context.BorrowRequests
+                .Where(br => br.BorrowerId == borrowerId)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by borrower"));
+        }
     }
 
-    public Task<Result<IEnumerable<BorrowRequest>>> GetByLenderIdAsync(Guid lenderId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<BorrowRequest>>> GetByLenderIdAsync(Guid lenderId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var requests = await _context.BorrowRequests
+                .Include(br => br.Item)
+                .Where(br => br.Item.OwnerId == lenderId)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by lender"));
+        }
     }
 
-    public Task<Result<IEnumerable<BorrowRequest>>> GetByItemIdAsync(Guid itemId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<BorrowRequest>>> GetByItemIdAsync(Guid itemId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var requests = await _context.BorrowRequests
+                .Where(br => br.ItemId == itemId)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by item"));
+        }
     }
 
-    public Task<Result<IEnumerable<BorrowRequest>>> GetByStatusAsync(BorrowStatus status, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<BorrowRequest>>> GetByStatusAsync(BorrowStatus status, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var requests = await _context.BorrowRequests
+                .Where(br => br.Status == status)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by status"));
+        }
     }
 
-    public Task<Result<IEnumerable<BorrowRequest>>> GetOverdueRequestsAsync(CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<BorrowRequest>>> GetOverdueRequestsAsync(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var currentDate = DateTime.UtcNow;
+            var requests = await _context.BorrowRequests
+                .Where(br => br.Status == BorrowStatus.Active &&
+                           br.RequestedEndDate < currentDate)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving overdue borrow requests"));
+        }
     }
 }

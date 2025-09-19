@@ -47,38 +47,137 @@ public class NotificationRepository : INotificationRepository
         }
     }
 
-    public Task<Result<Notification>> UpdateAsync(Notification notification, CancellationToken cancellationToken = default)
+    public async Task<Result<Notification>> UpdateAsync(Notification notification, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            notification.UpdatedAt = DateTime.UtcNow;
+            _context.Notifications.Update(notification);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<Notification>.Success(notification);
+        }
+        catch (Exception)
+        {
+            return Result<Notification>.Failure(Error.Unexpected("An error occurred while updating notification"));
+        }
     }
 
-    public Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var notification = await _context.Notifications.FindAsync(new object[] { id }, cancellationToken);
+            if (notification == null)
+            {
+                return Result<bool>.Failure(Error.NotFound("Notification", id.ToString()));
+            }
+
+            _context.Notifications.Remove(notification);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting notification"));
+        }
     }
 
-    public Task<Result<IEnumerable<Notification>>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Notification>>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Notification>>.Success(notifications);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving notifications by user"));
+        }
     }
 
-    public Task<Result<IEnumerable<Notification>>> GetUnreadByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Notification>>> GetUnreadByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Notification>>.Success(notifications);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving unread notifications"));
+        }
     }
 
-    public Task<Result<IEnumerable<Notification>>> GetByTypeAsync(NotificationType type, CancellationToken cancellationToken = default)
+    public async Task<Result<IEnumerable<Notification>>> GetByTypeAsync(NotificationType type, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.Type == type)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<Notification>>.Success(notifications);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving notifications by type"));
+        }
     }
 
-    public Task<Result<bool>> MarkAsReadAsync(Guid notificationId, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> MarkAsReadAsync(Guid notificationId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var notification = await _context.Notifications.FindAsync(new object[] { notificationId }, cancellationToken);
+            if (notification == null)
+            {
+                return Result<bool>.Failure(Error.NotFound("Notification", notificationId.ToString()));
+            }
+
+            notification.IsRead = true;
+            notification.ReadAt = DateTime.UtcNow;
+            notification.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while marking notification as read"));
+        }
     }
 
-    public Task<Result<bool>> MarkAllAsReadAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result<bool>> MarkAllAsReadAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var unreadNotifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToListAsync(cancellationToken);
+
+            var currentTime = DateTime.UtcNow;
+            foreach (var notification in unreadNotifications)
+            {
+                notification.IsRead = true;
+                notification.ReadAt = currentTime;
+                notification.UpdatedAt = currentTime;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while marking all notifications as read"));
+        }
     }
 }

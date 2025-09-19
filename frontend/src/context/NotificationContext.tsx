@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { useApiQuery } from '../hooks/useApi';
 import { notificationService } from '../services/notificationService';
 import type { Notification } from '../types/notification';
@@ -24,8 +24,10 @@ interface NotificationProviderProps {
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [localNotifications, setLocalNotifications] = useState<Notification[]>([]);
   const [settings, setSettings] = useState<Record<string, boolean>>({});
+  const originalSettingsRef = useRef<Record<string, boolean>>({});
+  const lastFetchedSettingsRef = useRef<Record<string, boolean>>({});
 
   const {
     data: fetchedNotifications = [],
@@ -43,49 +45,75 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     notificationService.getSettings
   );
 
-  useEffect(() => {
-    setNotifications(fetchedNotifications);
-  }, [fetchedNotifications]);
+  // Use fetched notifications directly, only use local state for optimistic updates
+  const notifications = localNotifications.length > 0 ? localNotifications : (fetchedNotifications || []);
 
   useEffect(() => {
-    setSettings(fetchedSettings);
+    if (Object.keys(fetchedSettings).length > 0) {
+      // Only update if settings have actually changed from last fetch
+      const settingsChanged = Object.keys(fetchedSettings).some(key =>
+        lastFetchedSettingsRef.current[key] !== fetchedSettings[key]
+      ) || Object.keys(lastFetchedSettingsRef.current).length !== Object.keys(fetchedSettings).length;
+
+      if (settingsChanged) {
+        setSettings(fetchedSettings);
+        originalSettingsRef.current = fetchedSettings;
+        lastFetchedSettingsRef.current = fetchedSettings;
+      }
+    }
   }, [fetchedSettings]);
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = Array.isArray(notifications) ? notifications.filter(n => !n.isRead).length : 0;
 
   const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notification =>
+    setLocalNotifications(prev => {
+      const current = prev.length > 0 ? prev : (fetchedNotifications || []);
+      return current.map(notification =>
         notification.id === id
           ? { ...notification, isRead: true }
           : notification
-      )
-    );
+      );
+    });
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev =>
-      prev.map(notification => ({ ...notification, isRead: true }))
-    );
+    setLocalNotifications(prev => {
+      const current = prev.length > 0 ? prev : (fetchedNotifications || []);
+      return current.map(notification => ({ ...notification, isRead: true }));
+    });
   };
 
   const addNotification = (notification: Notification) => {
-    setNotifications(prev => [notification, ...prev]);
+    setLocalNotifications(prev => {
+      const current = prev.length > 0 ? prev : (fetchedNotifications || []);
+      return [notification, ...current];
+    });
   };
 
   const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setLocalNotifications(prev => {
+      const current = prev.length > 0 ? prev : (fetchedNotifications || []);
+      return current.filter(n => n.id !== id);
+    });
   };
 
   const updateSettings = async (newSettings: Record<string, boolean>) => {
+    const previousSettings = settings;
     setSettings(newSettings);
     try {
       await notificationService.updateSettings(newSettings);
+      originalSettingsRef.current = newSettings;
     } catch (error) {
       console.error('Failed to update notification settings:', error);
       // Revert on error
-      setSettings(fetchedSettings);
+      setSettings(previousSettings);
     }
+  };
+
+  // Reset local notifications when refetching to sync with server
+  const refreshNotificationsAndSync = () => {
+    setLocalNotifications([]);
+    refreshNotifications();
   };
 
   // Set up WebSocket or SSE for real-time notifications
@@ -93,7 +121,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     // This would connect to a WebSocket or SSE endpoint for real-time notifications
     // For now, we'll poll every 30 seconds
     const interval = setInterval(() => {
-      refreshNotifications();
+      refreshNotificationsAndSync();
     }, 30000);
 
     return () => clearInterval(interval);
@@ -111,7 +139,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     unreadCount,
     isLoading,
     error: error instanceof Error ? error.message : null,
-    refreshNotifications,
+    refreshNotifications: refreshNotificationsAndSync,
     markAsRead,
     markAllAsRead,
     addNotification,

@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await apiClient.post<any>('/auth/login', request);
 
       // Store auth data
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
 
@@ -102,7 +102,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: 'LOGIN_SUCCESS', 
         payload: { 
           user: response.user, 
-          token: response.token 
+          token: response.accessToken 
         } 
       });
 
@@ -121,7 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await apiClient.post<any>('/auth/register', data);
 
       // Store auth data
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
 
@@ -129,7 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: 'LOGIN_SUCCESS', 
         payload: { 
           user: response.user, 
-          token: response.token 
+          token: response.accessToken 
         } 
       });
 
@@ -147,7 +147,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       const response = await apiClient.post<any>('/auth/google-login', { idToken });
 
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
 
@@ -155,7 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         type: 'LOGIN_SUCCESS', 
         payload: { 
           user: response.user, 
-          token: response.token 
+          token: response.accessToken 
         } 
       });
 

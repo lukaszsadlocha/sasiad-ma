@@ -14,8 +14,7 @@ export const communityService = {
   },
 
   create: async (communityData: CreateCommunityRequest): Promise<Community> => {
-    const response = await api.post<Community>('/communities', communityData);
-    return response.data;
+    return await api.post<Community>('/communities', communityData);
   },
 
   update: async (id: string, communityData: UpdateCommunityRequest): Promise<Community> => {
@@ -28,9 +27,7 @@ export const communityService = {
   },
 
   join: async (joinData: JoinCommunityRequest): Promise<void> => {
-    await api.post(`/communities/${joinData.communityId}/join`, {
-      invitationCode: joinData.invitationCode,
-    });
+    await api.post('/communities/join', joinData);
   },
 
   leave: async (id: string): Promise<void> => {
@@ -68,8 +65,7 @@ export const communityService = {
   },
 
   getUserCommunities: async (): Promise<Community[]> => {
-    const response = await api.get<Community[]>('/users/communities');
-    return response.data;
+    return await api.get<Community[]>('/users/communities');
   },
 
   search: async (query: string): Promise<Community[]> => {

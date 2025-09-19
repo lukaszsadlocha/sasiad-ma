@@ -35,24 +35,73 @@ public class CommunityService : ICommunityService
         }
     }
 
-    public Task<Result<IEnumerable<CommunityDto>>> GetUserCommunitiesAsync(Guid userId)
+    public async Task<Result<IEnumerable<CommunityDto>>> GetUserCommunitiesAsync(Guid userId)
     {
         try
         {
-            // For now, return empty list since we don't have the implementation yet
-            var communities = new List<CommunityDto>();
-            return Task.FromResult(Result<IEnumerable<CommunityDto>>.Success((IEnumerable<CommunityDto>)communities));
+            var communitiesResult = await _communityRepository.GetByUserIdAsync(userId);
+            if (!communitiesResult.IsSuccess)
+            {
+                return Result<IEnumerable<CommunityDto>>.Failure(communitiesResult.Error);
+            }
+
+            var communityDtos = communitiesResult.Value.Select(MapToCommunityDto);
+            return Result<IEnumerable<CommunityDto>>.Success(communityDtos);
         }
         catch (Exception)
         {
-            return Task.FromResult(Result<IEnumerable<CommunityDto>>.Failure(Error.Unexpected("An error occurred while retrieving user communities")));
+            return Result<IEnumerable<CommunityDto>>.Failure(Error.Unexpected("An error occurred while retrieving user communities"));
         }
     }
 
-    public Task<Result<CommunityDto>> CreateAsync(CreateCommunityRequest request, Guid createdBy)
+    public async Task<Result<CommunityDto>> CreateAsync(CreateCommunityRequest request, Guid createdBy)
     {
-        // TODO: Implement community creation
-        return Task.FromResult(Result<CommunityDto>.Failure(Error.Validation("feature", "Community creation not yet implemented")));
+        try
+        {
+            // Validate request
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return Result<CommunityDto>.Failure(Error.Validation("name", "Community name is required"));
+            }
+
+            // Create community entity
+            var community = new Core.Entities.Community
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name.Trim(),
+                Description = request.Description?.Trim() ?? string.Empty,
+                ImageUrl = request.ImageUrl,
+                IsPublic = request.IsPublic,
+                MaxMembers = request.MaxMembers,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Generate invitation code
+            community.GenerateNewInvitationCode();
+
+            // Create community in repository
+            var createResult = await _communityRepository.CreateAsync(community);
+            if (!createResult.IsSuccess)
+            {
+                return Result<CommunityDto>.Failure(createResult.Error);
+            }
+
+            // Add creator as admin member
+            var memberResult = await _communityRepository.AddMemberAsync(community.Id, createdBy, isAdmin: true);
+            if (!memberResult.IsSuccess)
+            {
+                return Result<CommunityDto>.Failure(memberResult.Error);
+            }
+
+            var communityDto = MapToCommunityDto(createResult.Value);
+            return Result<CommunityDto>.Success(communityDto);
+        }
+        catch (Exception)
+        {
+            return Result<CommunityDto>.Failure(Error.Unexpected("An error occurred while creating community"));
+        }
     }
 
     public Task<Result<CommunityDto>> UpdateAsync(Guid id, UpdateCommunityRequest request, Guid userId)
@@ -67,10 +116,44 @@ public class CommunityService : ICommunityService
         return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Community deletion not yet implemented")));
     }
 
-    public Task<Result<bool>> JoinAsync(JoinCommunityRequest request, Guid userId)
+    public async Task<Result<bool>> JoinAsync(JoinCommunityRequest request, Guid userId)
     {
-        // TODO: Implement community joining
-        return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Community joining not yet implemented")));
+        try
+        {
+            // Validate request
+            if (string.IsNullOrWhiteSpace(request.InvitationCode))
+            {
+                return Result<bool>.Failure(Error.Validation("invitationCode", "Invitation code is required"));
+            }
+
+            // Find community by invitation code
+            var communityResult = await _communityRepository.GetByInvitationCodeAsync(request.InvitationCode);
+            if (!communityResult.IsSuccess)
+            {
+                return Result<bool>.Failure(Error.Validation("invitationCode", "Invalid invitation code"));
+            }
+
+            var community = communityResult.Value;
+
+            // Check if community is active
+            if (!community.IsActive)
+            {
+                return Result<bool>.Failure(Error.Validation("community", "Community is not active"));
+            }
+
+            // Add user as member
+            var memberResult = await _communityRepository.AddMemberAsync(community.Id, userId);
+            if (!memberResult.IsSuccess)
+            {
+                return Result<bool>.Failure(memberResult.Error);
+            }
+
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while joining community"));
+        }
     }
 
     public Task<Result<bool>> LeaveAsync(Guid communityId, Guid userId)

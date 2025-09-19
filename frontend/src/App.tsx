@@ -20,6 +20,7 @@ import CommunityPage from './pages/CommunityPage';
 import ItemsPage from './pages/ItemsPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
+import JoinCommunityPage from './pages/JoinCommunityPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Components for direct routing
@@ -77,6 +78,11 @@ const AppContent: React.FC = () => {
           <Route path="/communities/create" element={
             <ProtectedRoute>
               <CreateCommunityForm />
+            </ProtectedRoute>
+          } />
+          <Route path="/communities/join" element={
+            <ProtectedRoute>
+              <JoinCommunityPage />
             </ProtectedRoute>
           } />
           <Route path="/communities/:id" element={

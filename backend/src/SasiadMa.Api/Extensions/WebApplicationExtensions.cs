@@ -28,6 +28,7 @@ public static class WebApplicationExtensions
         app.MapAuthEndpoints();
         app.MapUserEndpoints();
         app.MapCommunityEndpoints();
+        app.MapDashboardEndpoints();
         app.MapItemEndpoints();
         app.MapBorrowEndpoints();
         app.MapNotificationEndpoints();

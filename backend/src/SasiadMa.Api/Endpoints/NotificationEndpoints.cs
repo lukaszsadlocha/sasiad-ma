@@ -13,6 +13,24 @@ public static class NotificationEndpoints
             .WithSummary("Get notifications")
             .RequireAuthorization();
 
+        group.MapGet("/settings", () => Results.Ok(new Dictionary<string, bool>
+            {
+                { "emailNotifications", true },
+                { "pushNotifications", true },
+                { "borrowRequests", true },
+                { "lendingConfirmations", true },
+                { "communityUpdates", true },
+                { "reminders", true }
+            }))
+            .WithName("GetNotificationSettings")
+            .WithSummary("Get notification settings")
+            .RequireAuthorization();
+
+        group.MapPut("/settings", (Dictionary<string, bool> settings) => Results.Ok())
+            .WithName("UpdateNotificationSettings")
+            .WithSummary("Update notification settings")
+            .RequireAuthorization();
+
         return app;
     }
 }
