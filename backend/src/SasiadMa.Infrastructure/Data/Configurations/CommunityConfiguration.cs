@@ -28,7 +28,7 @@ public class CommunityConfiguration : IEntityTypeConfiguration<Community>
             .IsUnique();
 
         builder.Property(c => c.ImageUrl)
-            .HasMaxLength(500);
+            .HasMaxLength(5000000); // Increased to handle base64 encoded images
 
         builder.Property(c => c.Address)
             .HasMaxLength(200);

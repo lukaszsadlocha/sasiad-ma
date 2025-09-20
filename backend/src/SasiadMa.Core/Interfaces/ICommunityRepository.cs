@@ -15,4 +15,8 @@ public interface ICommunityRepository
     Task<Result<bool>> ExistsByInvitationCodeAsync(string invitationCode, CancellationToken cancellationToken = default);
     Task<Result<CommunityMember>> AddMemberAsync(Guid communityId, Guid userId, bool isAdmin = false, CancellationToken cancellationToken = default);
     Task<Result> RemoveMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default);
+    Task<Result<bool>> IsUserMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default);
+    Task<Result<bool>> IsUserAdminAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default);
+    Task<Result<bool>> UpdateInvitationCodeAsync(Guid communityId, string newCode, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<CommunityMember>>> GetMembersAsync(Guid communityId, CancellationToken cancellationToken = default);
 }

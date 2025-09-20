@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Upload, Users } from 'lucide-react';
+import { Upload, Users, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useApiMutation } from '../../hooks/useApi';
 import { communityService } from '../../services/communityService';
@@ -44,17 +44,43 @@ const CreateCommunityForm: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        toast.error('Image size must be less than 5MB');
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        e.target.value = '';
+        return;
+      }
+
+      // Validate file size (2MB limit for better performance)
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image size must be less than 2MB');
+        e.target.value = '';
         return;
       }
 
       setImageFile(file);
       const reader = new FileReader();
       reader.onload = () => {
-        setImagePreview(reader.result as string);
+        const result = reader.result as string;
+        setImagePreview(result);
+        console.log('Image loaded successfully, size:', result.length, 'characters');
+      };
+      reader.onerror = () => {
+        toast.error('Error reading image file');
+        setImageFile(null);
+        setImagePreview(null);
+        e.target.value = '';
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
     }
   };
 
@@ -68,8 +94,12 @@ const CreateCommunityForm: React.FC = () => {
         imageUrl: imagePreview || undefined,
       };
 
+      console.log('Creating community with image:', imagePreview ? 'Yes' : 'No');
+      console.log('Image URL length:', imagePreview?.length || 0);
+
       await createCommunityMutation.mutateAsync(communityData);
     } catch (error) {
+      console.error('Community creation error:', error);
       // Error handled by mutation
     }
   };
@@ -91,13 +121,23 @@ const CreateCommunityForm: React.FC = () => {
               Community Image (Optional)
             </label>
             <div className="flex items-center space-x-4">
-              <div className="w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+              <div className="relative w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                 {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                  />
+                  <>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      title="Remove image"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </>
                 ) : (
                   <Users className="h-8 w-8 text-gray-400" />
                 )}
@@ -108,7 +148,7 @@ const CreateCommunityForm: React.FC = () => {
                   className="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Image
+                  {imagePreview ? 'Change Image' : 'Upload Image'}
                 </label>
                 <input
                   id="image-upload"
@@ -118,7 +158,7 @@ const CreateCommunityForm: React.FC = () => {
                   className="hidden"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  PNG, JPG up to 5MB
+                  PNG, JPG up to 2MB
                 </p>
               </div>
             </div>

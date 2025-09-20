@@ -36,9 +36,9 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, showActions = true }) => {
     >
       {/* Item Image */}
       <div className="aspect-w-16 aspect-h-9">
-        {item.images && item.images.length > 0 ? (
+        {item.imageUrls && item.imageUrls.length > 0 ? (
           <img
-            src={item.images[0]}
+            src={item.imageUrls[0]}
             alt={item.name}
             className="w-full h-48 object-cover"
           />

@@ -31,17 +31,29 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
     >
       {/* Community Image */}
       <div className="aspect-w-16 aspect-h-9">
-        {community.imageUrl ? (
+        {community.imageUrl && community.imageUrl.trim() ? (
           <img
             src={community.imageUrl}
             alt={community.name}
             className="w-full h-48 object-cover rounded-t-lg"
+            onError={(e) => {
+              console.error('Image load error for community:', community.name);
+              // Hide the broken image and show fallback
+              (e.target as HTMLImageElement).style.display = 'none';
+              const fallback = (e.target as HTMLImageElement).nextElementSibling;
+              if (fallback) {
+                (fallback as HTMLElement).style.display = 'flex';
+              }
+            }}
           />
-        ) : (
-          <div className="w-full h-48 bg-gradient-to-br from-blue-400 to-blue-600 rounded-t-lg flex items-center justify-center">
-            <Users className="h-16 w-16 text-white opacity-80" />
-          </div>
-        )}
+        ) : null}
+        <div
+          className={`w-full h-48 bg-gradient-to-br from-blue-400 to-blue-600 rounded-t-lg flex items-center justify-center ${
+            community.imageUrl && community.imageUrl.trim() ? 'hidden' : 'flex'
+          }`}
+        >
+          <Users className="h-16 w-16 text-white opacity-80" />
+        </div>
       </div>
 
       {/* Community Info */}

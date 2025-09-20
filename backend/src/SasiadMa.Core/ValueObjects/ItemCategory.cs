@@ -42,11 +42,8 @@ public record ItemCategory
     
     public static bool TryGetByCode(string code, out ItemCategory? category)
     {
-        category = null;
-        var itemcategory = GetByCode(code);
-        if(category == null) return false;
-        category = itemcategory;
-        return true;
+        category = GetByCode(code);
+        return category != null;
     }
 
     public static IEnumerable<ItemCategory> GetAll()

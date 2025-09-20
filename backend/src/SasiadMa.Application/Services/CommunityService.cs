@@ -2,6 +2,7 @@ using SasiadMa.Application.DTOs.Community;
 using SasiadMa.Application.Interfaces;
 using SasiadMa.Core.Common;
 using SasiadMa.Core.Interfaces;
+using System.Linq;
 
 namespace SasiadMa.Application.Services;
 
@@ -16,7 +17,7 @@ public class CommunityService : ICommunityService
         _userRepository = userRepository;
     }
 
-    public async Task<Result<CommunityDto>> GetByIdAsync(Guid id)
+    public async Task<Result<CommunityDto>> GetByIdAsync(Guid id, Guid requestingUserId)
     {
         try
         {
@@ -24,6 +25,13 @@ public class CommunityService : ICommunityService
             if (!communityResult.IsSuccess)
             {
                 return Result<CommunityDto>.Failure(communityResult.Error);
+            }
+
+            // Check if user is a member of the community
+            var isMember = await _communityRepository.IsUserMemberAsync(id, requestingUserId);
+            if (!isMember.IsSuccess || !isMember.Value)
+            {
+                return Result<CommunityDto>.Failure(Error.Forbidden("You are not a member of this community"));
             }
 
             var communityDto = MapToCommunityDto(communityResult.Value);
@@ -196,5 +204,75 @@ public class CommunityService : ICommunityService
             CreatedAt = community.CreatedAt,
             Members = new List<CommunityMemberDto>()
         };
+    }
+
+    public async Task<Result<string>> GenerateInvitationCodeAsync(Guid communityId, Guid userId)
+    {
+        try
+        {
+            // Check if user is an admin of the community
+            var isAdminResult = await _communityRepository.IsUserAdminAsync(communityId, userId);
+            if (!isAdminResult.IsSuccess || !isAdminResult.Value)
+            {
+                return Result<string>.Failure(Error.Forbidden("Only admins can generate invitation codes"));
+            }
+
+            // Generate new invitation code
+            var newCode = GenerateInvitationCode();
+            var updateResult = await _communityRepository.UpdateInvitationCodeAsync(communityId, newCode);
+
+            if (!updateResult.IsSuccess)
+            {
+                return Result<string>.Failure(updateResult.Error);
+            }
+
+            return Result<string>.Success(newCode);
+        }
+        catch (Exception)
+        {
+            return Result<string>.Failure(Error.Unexpected("An error occurred while generating invitation code"));
+        }
+    }
+
+    public async Task<Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>> GetMembersAsync(Guid communityId, Guid requestingUserId)
+    {
+        try
+        {
+            // Check if user is a member of the community
+            var isMemberResult = await _communityRepository.IsUserMemberAsync(communityId, requestingUserId);
+            if (!isMemberResult.IsSuccess || !isMemberResult.Value)
+            {
+                return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(Error.Forbidden("You are not a member of this community"));
+            }
+
+            var membersResult = await _communityRepository.GetMembersAsync(communityId);
+            if (!membersResult.IsSuccess)
+            {
+                return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(membersResult.Error);
+            }
+
+            var memberDtos = membersResult.Value.Select(member => new SasiadMa.Application.DTOs.User.UserDto
+            {
+                Id = member.UserId,
+                FirstName = member.User?.FirstName ?? "",
+                LastName = member.User?.LastName ?? "",
+                Email = member.User?.Email ?? "",
+                ProfileImageUrl = member.User?.ProfileImageUrl
+            });
+
+            return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Success(memberDtos);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(Error.Unexpected("An error occurred while retrieving community members"));
+        }
+    }
+
+    private static string GenerateInvitationCode()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        var random = new Random();
+        return new string(Enumerable.Repeat(chars, 8)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }

@@ -4,23 +4,19 @@ import type { Item, CreateItemRequest, UpdateItemRequest, ItemSearchRequest } fr
 export const itemService = {
   getAll: async (communityId?: string): Promise<Item[]> => {
     const url = communityId ? `/communities/${communityId}/items` : '/items';
-    const response = await api.get<Item[]>(url);
-    return response.data;
+    return await api.get<Item[]>(url);
   },
 
   getById: async (id: string): Promise<Item> => {
-    const response = await api.get<Item>(`/items/${id}`);
-    return response.data;
+    return await api.get<Item>(`/items/${id}`);
   },
 
   create: async (itemData: CreateItemRequest): Promise<Item> => {
-    const response = await api.post<Item>('/items', itemData);
-    return response.data;
+    return await api.post<Item>('/items', itemData);
   },
 
   update: async (id: string, itemData: UpdateItemRequest): Promise<Item> => {
-    const response = await api.put<Item>(`/items/${id}`, itemData);
-    return response.data;
+    return await api.put<Item>(`/items/${id}`, itemData);
   },
 
   delete: async (id: string): Promise<void> => {
@@ -28,10 +24,9 @@ export const itemService = {
   },
 
   search: async (searchParams: ItemSearchRequest): Promise<Item[]> => {
-    const response = await api.get<Item[]>('/items/search', {
+    return await api.get<Item[]>('/items/search', {
       params: searchParams,
     });
-    return response.data;
   },
 
   uploadImages: async (id: string, files: File[]): Promise<{ imageUrls: string[] }> => {
@@ -40,12 +35,11 @@ export const itemService = {
       formData.append('images', file);
     });
 
-    const response = await api.post<{ imageUrls: string[] }>(`/items/${id}/images`, formData, {
+    return await api.post<{ imageUrls: string[] }>(`/items/${id}/images`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
   },
 
   deleteImage: async (id: string, imageUrl: string): Promise<void> => {
@@ -55,26 +49,22 @@ export const itemService = {
   },
 
   getMyItems: async (): Promise<Item[]> => {
-    const response = await api.get<Item[]>('/users/items');
-    return response.data;
+    return await api.get<Item[]>('/users/items');
   },
 
   updateAvailability: async (id: string, available: boolean): Promise<Item> => {
-    const response = await api.patch<Item>(`/items/${id}/availability`, { available });
-    return response.data;
+    return await api.patch<Item>(`/items/${id}/availability`, { available });
   },
 
   getCategories: async (): Promise<string[]> => {
-    const response = await api.get<string[]>('/items/categories');
-    return response.data;
+    return await api.get<string[]>('/items/categories');
   },
 
   getPopularItems: async (communityId?: string): Promise<Item[]> => {
     const url = communityId
       ? `/communities/${communityId}/items/popular`
       : '/items/popular';
-    const response = await api.get<Item[]>(url);
-    return response.data;
+    return await api.get<Item[]>(url);
   },
 
   reportItem: async (id: string, reason: string): Promise<void> => {

@@ -41,7 +41,7 @@ const queryClient = new QueryClient({
 });
 
 const AppContent: React.FC = () => {
-  const { isLoading } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
 
   if (isLoading) {
     return (
@@ -56,8 +56,16 @@ const AppContent: React.FC = () => {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<HomePage />} />
+          {/* Root route - shows dashboard for authenticated users, homepage for others */}
+          <Route path="/" element={
+            isAuthenticated ? (
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            ) : (
+              <HomePage />
+            )
+          } />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/auth/confirm-email" element={<EmailConfirmation />} />

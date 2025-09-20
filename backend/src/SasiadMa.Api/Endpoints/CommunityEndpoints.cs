@@ -23,9 +23,29 @@ public static class CommunityEndpoints
             .WithSummary("Create a new community")
             .RequireAuthorization();
 
+        group.MapGet("/{id:guid}", GetCommunityByIdAsync)
+            .WithName("GetCommunityById")
+            .WithSummary("Get community details by ID")
+            .RequireAuthorization();
+
         group.MapPost("/join", JoinCommunityAsync)
             .WithName("JoinCommunity")
             .WithSummary("Join a community using invitation code")
+            .RequireAuthorization();
+
+        group.MapPost("/{id:guid}/leave", LeaveCommunityAsync)
+            .WithName("LeaveCommunity")
+            .WithSummary("Leave a community")
+            .RequireAuthorization();
+
+        group.MapPost("/{id:guid}/invitation-code", GenerateInvitationCodeAsync)
+            .WithName("GenerateInvitationCode")
+            .WithSummary("Generate new invitation code for community")
+            .RequireAuthorization();
+
+        group.MapGet("/{id:guid}/members", GetCommunityMembersAsync)
+            .WithName("GetCommunityMembers")
+            .WithSummary("Get community members")
             .RequireAuthorization();
 
         return app;
@@ -66,6 +86,24 @@ public static class CommunityEndpoints
             : Results.BadRequest(result.Error);
     }
 
+    private static async Task<IResult> GetCommunityByIdAsync(
+        ICommunityService communityService,
+        ClaimsPrincipal user,
+        Guid id)
+    {
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await communityService.GetByIdAsync(id, userId);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.NotFound(result.Error);
+    }
+
     private static async Task<IResult> JoinCommunityAsync(
         ICommunityService communityService,
         ClaimsPrincipal user,
@@ -81,6 +119,60 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(new { message = "Successfully joined community" })
+            : Results.BadRequest(result.Error);
+    }
+
+    private static async Task<IResult> LeaveCommunityAsync(
+        ICommunityService communityService,
+        ClaimsPrincipal user,
+        Guid id)
+    {
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await communityService.LeaveAsync(id, userId);
+
+        return result.IsSuccess
+            ? Results.Ok(new { message = "Successfully left community" })
+            : Results.BadRequest(result.Error);
+    }
+
+    private static async Task<IResult> GenerateInvitationCodeAsync(
+        ICommunityService communityService,
+        ClaimsPrincipal user,
+        Guid id)
+    {
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await communityService.GenerateInvitationCodeAsync(id, userId);
+
+        return result.IsSuccess
+            ? Results.Ok(new { invitationCode = result.Value })
+            : Results.BadRequest(result.Error);
+    }
+
+    private static async Task<IResult> GetCommunityMembersAsync(
+        ICommunityService communityService,
+        ClaimsPrincipal user,
+        Guid id)
+    {
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var result = await communityService.GetMembersAsync(id, userId);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
             : Results.BadRequest(result.Error);
     }
 }

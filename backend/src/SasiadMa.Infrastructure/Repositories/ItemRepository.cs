@@ -21,6 +21,9 @@ public class ItemRepository : IItemRepository
         try
         {
             var item = await _context.Items
+                .Include(i => i.Owner)
+                .Include(i => i.Community)
+                .Include(i => i.Images)
                 .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
 
             return item != null
@@ -89,7 +92,10 @@ public class ItemRepository : IItemRepository
         try
         {
             var items = await _context.Items
-                .Where(i => i.CommunityId == communityId)
+                .Include(i => i.Owner)
+                .Include(i => i.Community)
+                .Include(i => i.Images)
+                .Where(i => i.CommunityId == communityId && i.IsActive)
                 .ToListAsync(cancellationToken);
 
             return Result<IEnumerable<Item>>.Success(items);
@@ -105,7 +111,10 @@ public class ItemRepository : IItemRepository
         try
         {
             var items = await _context.Items
-                .Where(i => i.OwnerId == ownerId)
+                .Include(i => i.Owner)
+                .Include(i => i.Community)
+                .Include(i => i.Images)
+                .Where(i => i.OwnerId == ownerId && i.IsActive)
                 .ToListAsync(cancellationToken);
 
             return Result<IEnumerable<Item>>.Success(items);
@@ -120,7 +129,11 @@ public class ItemRepository : IItemRepository
     {
         try
         {
-            var query = _context.Items.AsQueryable();
+            var query = _context.Items
+                .Include(i => i.Owner)
+                .Include(i => i.Community)
+                .Include(i => i.Images)
+                .AsQueryable();
 
             // Filter by search term in name or description
             if (!string.IsNullOrWhiteSpace(searchTerm))

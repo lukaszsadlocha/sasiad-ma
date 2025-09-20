@@ -11,10 +11,10 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICommunityService, CommunityService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IItemService, ItemService>();
 
         // Other services will be added as they are implemented
         // services.AddScoped<IUserService, UserService>();
-        // services.AddScoped<IItemService, ItemService>();
         // services.AddScoped<IBorrowService, BorrowService>();
         // services.AddScoped<INotificationService, NotificationService>();
 

@@ -136,8 +136,95 @@ public class CommunityRepository : ICommunityRepository
         }
     }
 
-    public Task<Result> RemoveMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result> RemoveMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var membership = await _context.CommunityMembers
+                .FirstOrDefaultAsync(cm => cm.CommunityId == communityId && cm.UserId == userId, cancellationToken);
+
+            if (membership == null)
+            {
+                return Result.Failure(Error.NotFound("Community membership", $"{communityId}-{userId}"));
+            }
+
+            _context.CommunityMembers.Remove(membership);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Result.Success();
+        }
+        catch (Exception)
+        {
+            return Result.Failure(Error.Unexpected("An error occurred while removing member from community"));
+        }
+    }
+
+    public async Task<Result<bool>> IsUserMemberAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var isMember = await _context.CommunityMembers
+                .AnyAsync(cm => cm.CommunityId == communityId && cm.UserId == userId && cm.IsActive, cancellationToken);
+
+            return Result<bool>.Success(isMember);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while checking membership"));
+        }
+    }
+
+    public async Task<Result<bool>> IsUserAdminAsync(Guid communityId, Guid userId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var isAdmin = await _context.CommunityMembers
+                .AnyAsync(cm => cm.CommunityId == communityId && cm.UserId == userId && cm.IsAdmin && cm.IsActive, cancellationToken);
+
+            return Result<bool>.Success(isAdmin);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while checking admin status"));
+        }
+    }
+
+    public async Task<Result<bool>> UpdateInvitationCodeAsync(Guid communityId, string newCode, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var community = await _context.Communities.FindAsync(new object[] { communityId }, cancellationToken);
+            if (community == null)
+            {
+                return Result<bool>.Failure(Error.NotFound("Community", communityId.ToString()));
+            }
+
+            community.InvitationCode = newCode;
+            community.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception)
+        {
+            return Result<bool>.Failure(Error.Unexpected("An error occurred while updating invitation code"));
+        }
+    }
+
+    public async Task<Result<IEnumerable<CommunityMember>>> GetMembersAsync(Guid communityId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var members = await _context.CommunityMembers
+                .Include(cm => cm.User)
+                .Where(cm => cm.CommunityId == communityId && cm.IsActive)
+                .ToListAsync(cancellationToken);
+
+            return Result<IEnumerable<CommunityMember>>.Success(members);
+        }
+        catch (Exception)
+        {
+            return Result<IEnumerable<CommunityMember>>.Failure(Error.Unexpected("An error occurred while retrieving community members"));
+        }
     }
 }

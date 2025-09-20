@@ -4,13 +4,11 @@ import type { User } from '../types/user';
 
 export const communityService = {
   getAll: async (): Promise<Community[]> => {
-    const response = await api.get<Community[]>('/communities');
-    return response.data;
+    return await api.get<Community[]>('/communities');
   },
 
   getById: async (id: string): Promise<Community> => {
-    const response = await api.get<Community>(`/communities/${id}`);
-    return response.data;
+    return await api.get<Community>(`/communities/${id}`);
   },
 
   create: async (communityData: CreateCommunityRequest): Promise<Community> => {
@@ -18,8 +16,7 @@ export const communityService = {
   },
 
   update: async (id: string, communityData: UpdateCommunityRequest): Promise<Community> => {
-    const response = await api.put<Community>(`/communities/${id}`, communityData);
-    return response.data;
+    return await api.put<Community>(`/communities/${id}`, communityData);
   },
 
   delete: async (id: string): Promise<void> => {
@@ -35,8 +32,7 @@ export const communityService = {
   },
 
   getMembers: async (id: string): Promise<User[]> => {
-    const response = await api.get<User[]>(`/communities/${id}/members`);
-    return response.data;
+    return await api.get<User[]>(`/communities/${id}/members`);
   },
 
   removeMember: async (communityId: string, userId: string): Promise<void> => {
@@ -48,20 +44,18 @@ export const communityService = {
   },
 
   generateInvitationCode: async (id: string): Promise<{ invitationCode: string }> => {
-    const response = await api.post<{ invitationCode: string }>(`/communities/${id}/invitation-code`);
-    return response.data;
+    return await api.post<{ invitationCode: string }>(`/communities/${id}/invitation-code`);
   },
 
   uploadImage: async (id: string, file: File): Promise<{ imageUrl: string }> => {
     const formData = new FormData();
     formData.append('image', file);
 
-    const response = await api.post<{ imageUrl: string }>(`/communities/${id}/image`, formData, {
+    return await api.post<{ imageUrl: string }>(`/communities/${id}/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
   },
 
   getUserCommunities: async (): Promise<Community[]> => {
@@ -69,9 +63,8 @@ export const communityService = {
   },
 
   search: async (query: string): Promise<Community[]> => {
-    const response = await api.get<Community[]>('/communities/search', {
+    return await api.get<Community[]>('/communities/search', {
       params: { q: query },
     });
-    return response.data;
   },
 };
