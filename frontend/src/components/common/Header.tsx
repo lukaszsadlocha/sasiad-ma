@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { Home, Users, Package, Bell, User, LogOut } from 'lucide-react';
+import LanguageSelector from './LanguageSelector';
 
 const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     logout();
@@ -19,7 +22,7 @@ const Header: React.FC = () => {
             <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
               <Home className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Sąsiad Ma</span>
+            <span className="text-xl font-bold text-gray-900">{t('app.title')}</span>
           </Link>
 
           {/* Navigation */}
@@ -29,30 +32,33 @@ const Header: React.FC = () => {
                 to="/dashboard" 
                 className="text-gray-700 hover:text-blue-600 transition-colors"
               >
-                Dashboard
+                {t('header.dashboard')}
               </Link>
               <Link 
                 to="/communities" 
                 className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors"
               >
                 <Users className="h-4 w-4" />
-                <span>Communities</span>
+                <span>{t('header.communities')}</span>
               </Link>
               <Link 
                 to="/items" 
                 className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors"
               >
                 <Package className="h-4 w-4" />
-                <span>Items</span>
+                <span>{t('header.items')}</span>
               </Link>
               <Link 
                 to="/notifications" 
                 className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors"
               >
                 <Bell className="h-4 w-4" />
-                <span>Notifications</span>
+                <span>{t('header.notifications')}</span>
               </Link>
               
+              {/* Language Selector */}
+              <LanguageSelector />
+
               {/* User Menu */}
               <div className="flex items-center space-x-3">
                 <Link 
@@ -77,23 +83,24 @@ const Header: React.FC = () => {
                   title="Logout"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="hidden md:block">Logout</span>
+                  <span className="hidden md:block">{t('header.logout')}</span>
                 </button>
               </div>
             </nav>
           ) : (
             <nav className="flex items-center space-x-4">
+              <LanguageSelector />
               <Link 
                 to="/login" 
                 className="text-gray-700 hover:text-blue-600 transition-colors"
               >
-                Login
+                {t('header.login')}
               </Link>
               <Link 
                 to="/register" 
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
               >
-                Register
+                {t('header.register')}
               </Link>
             </nav>
           )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Users, MapPin } from 'lucide-react';
 import { useApiQuery } from '../../hooks/useApi';
 import { communityService } from '../../services/communityService';
@@ -8,6 +9,7 @@ import CommunityCard from './CommunityCard';
 
 const CommunityList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     data: communities = [],
@@ -27,12 +29,12 @@ const CommunityList: React.FC = () => {
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-600 mb-4">Failed to load communities</div>
+        <div className="text-red-600 mb-4">{t('communities.loadError')}</div>
         <button
           onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          Try Again
+          {t('communities.tryAgain')}
         </button>
       </div>
     );
@@ -41,13 +43,13 @@ const CommunityList: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">My Communities</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('communities.myTitle')}</h1>
         <button
           onClick={() => navigate('/communities/create')}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Create Community
+          {t('communities.createButton')}
         </button>
       </div>
 
@@ -57,10 +59,10 @@ const CommunityList: React.FC = () => {
             <Users className="h-12 w-12 text-gray-400" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No communities yet
+            {t('communities.noCommunitiesTitle')}
           </h3>
           <p className="text-gray-600 mb-6">
-            Join an existing community or create your own to start sharing items with your neighbors.
+            {t('communities.noCommunitiesMessage')}
           </p>
           <div className="space-x-3">
             <button
@@ -68,14 +70,14 @@ const CommunityList: React.FC = () => {
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Create Community
+              {t('communities.createButton')}
             </button>
             <button
               onClick={() => navigate('/communities/join')}
               className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50"
             >
               <MapPin className="h-4 w-4 mr-2" />
-              Join Community
+              {t('communities.joinButton')}
             </button>
           </div>
         </div>

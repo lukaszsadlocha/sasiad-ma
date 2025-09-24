@@ -1,0 +1,447 @@
+{
+  "app": {
+    "title": "Sąsiad Ma"
+  },
+  "header": {
+    "dashboard": "Panel",
+    "communities": "Społeczności",
+    "items": "Przedmioty",
+    "notifications": "Powiadomienia",
+    "logout": "Wyloguj",
+    "login": "Zaloguj",
+    "register": "Zarejestruj"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Dziel się z",
+      "titleHighlight": "Sąsiadami",
+      "subtitle": "Sąsiad Ma ułatwia wypożyczanie i pożyczanie przedmiotów w twojej społeczności. Buduj silniejsze więzi sąsiedzkie, jednocześnie redukując marnotrawstwo i oszczędzając pieniądze.",
+      "goToDashboard": "Przejdź do Panelu",
+      "getStarted": "Rozpocznij",
+      "signIn": "Zaloguj się"
+    },
+    "howItWorks": {
+      "title": "Jak to działa",
+      "subtitle": "Proste kroki, aby zacząć dzielić się ze swoją społecznością",
+      "joinCommunity": {
+        "title": "Dołącz do Społeczności",
+        "description": "Utwórz lub dołącz do społeczności sąsiedzkiej używając kodu zaproszenia"
+      },
+      "shareItems": {
+        "title": "Dziel się Przedmiotami",
+        "description": "Dodaj przedmioty, które chcesz pożyczać lub poproś o przedmioty, które potrzebujesz wypożyczyć"
+      },
+      "buildTrust": {
+        "title": "Buduj Zaufanie",
+        "description": "Buduj reputację poprzez udane wypożyczenia i zwroty w twojej społeczności"
+      }
+    },
+    "benefits": {
+      "title": "Dlaczego warto wybrać Sąsiad Ma?",
+      "subtitle": "Korzyści dla ciebie i twojej społeczności",
+      "saveMoney": {
+        "title": "Oszczędzaj Pieniądze",
+        "description": "Wypożyczaj przedmioty zamiast kupować je na jednorazowe użycie"
+      },
+      "reduceWaste": {
+        "title": "Redukuj Marnotrawstwo",
+        "description": "Dziel się zasobami i zmniejszaj wpływ na środowisko"
+      },
+      "meetNeighbors": {
+        "title": "Poznaj Sąsiadów",
+        "description": "Buduj silniejsze relacje w swojej społeczności"
+      },
+      "freeToUse": {
+        "title": "Darmowe Użytkowanie",
+        "description": "Brak opłat czy ładowań - tylko dobrzy sąsiedzi pomagający sobie nawzajem"
+      },
+      "easyCommunication": {
+        "title": "Łatwa Komunikacja",
+        "description": "Wbudowane wiadomości i powiadomienia utrzymują wszystkich w kontakcie"
+      },
+      "trustSafety": {
+        "title": "Zaufanie i Bezpieczeństwo",
+        "description": "System reputacji i zaufanie oparte na społeczności"
+      }
+    },
+    "cta": {
+      "title": "Gotowy, aby zacząć dzielić się?",
+      "subtitle": "Dołącz do swoich sąsiadów i zacznij budować silniejszą, bardziej połączoną społeczność już dziś.",
+      "createAccount": "Utwórz Swoje Konto"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Zaloguj się na swoje konto",
+      "subtitle": "Lub",
+      "createNewAccount": "utwórz nowe konto",
+      "email": "Adres email",
+      "password": "Hasło",
+      "signIn": "Zaloguj się",
+      "enterEmail": "Wprowadź swój email",
+      "enterPassword": "Wprowadź swoje hasło",
+      "forgotPassword": "Zapomniałeś hasła?",
+      "emailRequired": "Email jest wymagany",
+      "emailInvalid": "Proszę wprowadzić prawidłowy adres email",
+      "passwordRequired": "Hasło jest wymagane",
+      "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków"
+    },
+    "register": {
+      "title": "Utwórz Konto",
+      "subtitle": "Dołącz do swojej społeczności i zacznij dzielić się",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "email": "Email",
+      "password": "Hasło",
+      "confirmPassword": "Potwierdź Hasło",
+      "createAccount": "Utwórz Konto",
+      "haveAccount": "Masz już konto?",
+      "signIn": "Zaloguj się"
+    }
+  },
+  "dashboard": {
+    "welcome": "Witaj z powrotem, {{name}}! 👋",
+    "subtitle": "Oto co dzieje się w twoich społecznościach",
+    "stats": {
+      "communities": "Społeczności",
+      "yourItems": "Twoje Przedmioty",
+      "activeBorrows": "Aktywne Wypożyczenia",
+      "notifications": "Powiadomienia"
+    },
+    "quickActions": {
+      "title": "Szybkie Akcje",
+      "addNewItem": {
+        "title": "Dodaj Nowy Przedmiot",
+        "description": "Udostępnij przedmiot swojej społeczności"
+      },
+      "joinCommunity": {
+        "title": "Dołącz do Społeczności",
+        "description": "Dołącz do nowej grupy sąsiedzkiej"
+      },
+      "browseItems": {
+        "title": "Przeglądaj Przedmioty",
+        "description": "Znajdź przedmioty do wypożyczenia"
+      }
+    },
+    "recentActivity": {
+      "title": "Ostatnia Aktywność",
+      "viewAll": "Zobacz całą aktywność →",
+      "examples": {
+        "returned": "Twój {{item}} został zwrócony przez {{user}}",
+        "joined": "{{user}} dołączył do {{community}}",
+        "newRequest": "Nowa prośba o wypożyczenie twojego {{item}}"
+      },
+      "timeAgo": {
+        "hoursAgo": "{{count}} godzin temu",
+        "dayAgo": "1 dzień temu",
+        "daysAgo": "{{count}} dni temu"
+      }
+    },
+    "errors": {
+      "loadingTitle": "Nie można załadować pulpitu",
+      "loadingMessage": "Spróbuj odświeżyć stronę"
+    }
+  },
+  "language": {
+    "select": "Wybierz Język",
+    "english": "English",
+    "polish": "Polski"
+  },
+  "communities": {
+    "myTitle": "Moje Społeczności",
+    "createButton": "Utwórz Społeczność",
+    "joinButton": "Dołącz do Społeczności",
+    "noCommunitiesTitle": "Brak społeczności",
+    "noCommunitiesMessage": "Dołącz do istniejącej społeczności lub utwórz własną, aby zacząć dzielić się przedmiotami z sąsiadami.",
+    "loadError": "Nie udało się załadować społeczności",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "items": {
+    "myTitle": "Moje Przedmioty",
+    "addButton": "Dodaj Przedmiot",
+    "browseButton": "Przeglądaj Przedmioty",
+    "noItemsTitle": "Brak przedmiotów",
+    "noItemsMessage": "Dodaj swój pierwszy przedmiot, aby zacząć dzielić się ze swoją społecznością.",
+    "loadError": "Nie udało się załadować przedmiotów"
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "noNotifications": "Brak powiadomień",
+    "loadError": "Nie udało się załadować powiadomień"
+  },
+  "auth": {
+    "login": {
+      "title": "Zaloguj się na swoje konto",
+      "subtitle": "Lub",
+      "createNewAccount": "utwórz nowe konto",
+      "email": "Adres email",
+      "password": "Hasło",
+      "signIn": "Zaloguj się",
+      "enterEmail": "Wprowadź swój email",
+      "enterPassword": "Wprowadź swoje hasło",
+      "forgotPassword": "Zapomniałeś hasła?",
+      "emailRequired": "Email jest wymagany",
+      "emailInvalid": "Proszę wprowadzić prawidłowy adres email",
+      "passwordRequired": "Hasło jest wymagane",
+      "passwordMinLength": "Hasło musi mieć co najmniej 6 znaków"
+    },
+    "register": {
+      "title": "Utwórz swoje konto",
+      "subtitle": "Lub",
+      "signInExisting": "zaloguj się na istniejące konto",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "email": "Adres email",
+      "password": "Hasło",
+      "confirmPassword": "Potwierdź hasło",
+      "createAccount": "Utwórz konto",
+      "haveAccount": "Masz już konto?",
+      "signIn": "Zaloguj się",
+      "firstNameRequired": "Imię jest wymagane",
+      "firstNameMinLength": "Imię musi mieć co najmniej 2 znaki",
+      "lastNameRequired": "Nazwisko jest wymagane",
+      "lastNameMinLength": "Nazwisko musi mieć co najmniej 2 znaki",
+      "emailRequired": "Email jest wymagany",
+      "emailInvalid": "Proszę wprowadzić prawidłowy adres email",
+      "passwordRequired": "Hasło jest wymagane",
+      "passwordMinLength": "Hasło musi mieć co najmniej 8 znaków",
+      "passwordStrength": "Hasło musi zawierać co najmniej jedną małą literę, jedną wielką literę i jedną cyfrę",
+      "confirmPasswordRequired": "Proszę potwierdzić swoje hasło",
+      "passwordMismatch": "Hasła nie pasują do siebie",
+      "enterFirstName": "Imię",
+      "enterLastName": "Nazwisko",
+      "enterEmail": "Wprowadź swój email",
+      "createPassword": "Utwórz hasło",
+      "confirmYourPassword": "Potwierdź swoje hasło",
+      "termsAgreement": "Tworząc konto, zgadzasz się na nasze",
+      "termsOfService": "Warunki świadczenia usług",
+      "and": "i",
+      "privacyPolicy": "Polityka prywatności",
+      "creating": "Tworzenie..."
+    },
+    "google": {
+      "signingIn": "Logowanie...",
+      "continueWith": "Kontynuuj z Google"
+    },
+    "emailConfirmation": {
+      "invalidLink": "Nieprawidłowy link potwierdzenia. Sprawdź email w poszukiwaniu prawidłowego linku.",
+      "successMessage": "Twój email został pomyślnie potwierdzony! Możesz teraz zalogować się na swoje konto.",
+      "linkExpired": "Ten link potwierdzenia wygasł. Poproś o nowy.",
+      "emailNotAvailable": "Adres email niedostępny. Spróbuj zarejestrować się ponownie.",
+      "resendSuccess": "Nowy email potwierdzenia został wysłany. Sprawdź swoją skrzynkę odbiorczą.",
+      "resendFailed": "Nie udało się wysłać ponownie emaila potwierdzenia. Spróbuj ponownie później.",
+      "confirmingEmail": "Potwierdzanie twojego emaila...",
+      "emailConfirmed": "Email potwierdzony!",
+      "confirmationFailed": "Potwierdzenie nie powiodło się",
+      "expired": "Link wygasł",
+      "emailConfirmation": "Potwierdzenie emaila",
+      "goToLogin": "Przejdź do logowania",
+      "backToHome": "Powrót do strony głównej",
+      "sending": "Wysyłanie...",
+      "sendNewEmail": "Wyślij nowy email potwierdzenia",
+      "backToRegistration": "Powrót do rejestracji",
+      "tryRegistrationAgain": "Spróbuj rejestracji ponownie",
+      "contactUs": "skontaktuj się z nami"
+    }
+  },
+  "footer": {
+    "tagline": "Wzmacnianie więzi sąsiedzkich poprzez dzielenie się",
+    "about": "O nas",
+    "privacy": "Prywatność",
+    "terms": "Warunki",
+    "contact": "Kontakt",
+    "copyright": "© {{year}} Sąsiad Ma. Wszystkie prawa zastrzeżone."
+  },
+  "errorBoundary": {
+    "title": "Ups! Coś poszło nie tak",
+    "message": "Przepraszamy za niedogodności. Spróbuj odświeżyć stronę lub skontaktuj się z pomocą techniczną, jeśli problem będzie się powtarzał.",
+    "errorDetails": "Szczegóły błędu",
+    "refreshPage": "Odśwież stronę",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "community": {
+    "notFound": "Społeczność nie znaleziona",
+    "notFoundMessage": "Społeczność, której szukasz, nie istnieje.",
+    "errorLoading": "Błąd ładowania społeczności",
+    "loadError": "Nie udało się załadować szczegółów społeczności.",
+    "backToCommunities": "Powrót do społeczności",
+    "joinCommunity": "Dołącz do społeczności",
+    "leave": "Opuść",
+    "leaveConfirm": "Czy na pewno chcesz opuścić tę społeczność?",
+    "leftSuccess": "Pomyślnie opuściłeś społeczność",
+    "leftError": "Nie udało się opuścić społeczności",
+    "members": "Członkowie",
+    "visibility": "Widoczność",
+    "maxMembers": "Maksymalna liczba członków",
+    "created": "Utworzono",
+    "invitationCode": "Kod zaproszenia",
+    "generateNew": "Wygeneruj nowy",
+    "newCodeGenerated": "Wygenerowano nowy kod zaproszenia",
+    "generateCodeError": "Nie udało się wygenerować kodu zaproszenia",
+    "hide": "Ukryj",
+    "show": "Pokaż",
+    "copyCode": "Skopiuj kod zaproszenia",
+    "codeCopied": "Kod zaproszenia skopiowany do schowka",
+    "copyCodeError": "Nie udało się skopiować kodu zaproszenia",
+    "shareCodeText": "Udostępnij ten kod osobom, które chcesz zaprosić do tej społeczności.",
+    "noMembersFound": "Nie znaleziono członków",
+    "admin": "Administrator",
+    "joined": "Dołączył",
+    "create": {
+      "title": "Utwórz nową społeczność",
+      "subtitle": "Rozpocznij nową społeczność, aby dzielić się przedmiotami z sąsiadami",
+      "successMessage": "Społeczność została utworzona pomyślnie!",
+      "errorMessage": "Nie udało się utworzyć społeczności",
+      "invalidImageFile": "Proszę wybrać prawidłowy plik obrazu",
+      "imageTooLarge": "Rozmiar obrazu musi być mniejszy niż 2MB",
+      "imageReadError": "Błąd odczytu pliku obrazu",
+      "imageLabel": "Obraz społeczności (opcjonalne)",
+      "changeImage": "Zmień obraz",
+      "uploadImage": "Prześlij obraz",
+      "imageHelp": "PNG, JPG do 2MB",
+      "nameLabel": "Nazwa społeczności *",
+      "nameRequired": "Nazwa społeczności jest wymagana",
+      "nameMinLength": "Nazwa musi mieć co najmniej 3 znaki",
+      "nameMaxLength": "Nazwa musi być krótsza niż 50 znaków",
+      "namePlaceholder": "Wprowadź nazwę społeczności",
+      "descriptionLabel": "Opis *",
+      "descriptionRequired": "Opis jest wymagany",
+      "descriptionMinLength": "Opis musi mieć co najmniej 10 znaków",
+      "descriptionMaxLength": "Opis musi być krótszy niż 500 znaków",
+      "descriptionPlaceholder": "Opisz swoją społeczność, jej cel i to, co ją wyróżnia",
+      "maxMembersLabel": "Maksymalna liczba członków (opcjonalne)",
+      "maxMembersMin": "Wymagany jest co najmniej 1 członek",
+      "maxMembersMax": "Maksymalnie 10 000 członków dozwolonych",
+      "maxMembersHelp": "Pozostaw puste dla domyślnego limitu 1000 członków",
+      "publicLabel": "Społeczność publiczna",
+      "publicHelp": "Każdy może odkryć i dołączyć do tej społeczności. Jeśli nie zaznaczone, tylko osoby z kodem zaproszenia mogą dołączyć.",
+      "creating": "Tworzenie...",
+      "createButton": "Utwórz społeczność"
+    },
+    "join": {
+      "title": "Dołącz do społeczności",
+      "subtitle": "Wprowadź kod zaproszenia, aby dołączyć do istniejącej społeczności",
+      "successMessage": "Pomyślnie dołączono do społeczności!",
+      "errorMessage": "Nie udało się dołączyć do społeczności",
+      "codeLabel": "Kod zaproszenia",
+      "codeRequired": "Kod zaproszenia jest wymagany",
+      "codeMinLength": "Kod zaproszenia musi mieć co najmniej 3 znaki",
+      "codePlaceholder": "Wprowadź kod zaproszenia",
+      "back": "Wstecz",
+      "joinButton": "Dołącz do społeczności",
+      "noCode": "Nie masz kodu zaproszenia?",
+      "createOwn": "Utwórz własną społeczność"
+    },
+    "card": {
+      "noDescription": "Brak dostępnego opisu",
+      "member": "członek",
+      "members": "członków",
+      "created": "Utworzono",
+      "public": "Publiczna",
+      "private": "Prywatna"
+    }
+  },
+  "items": {
+    "title": "Przedmioty",
+    "notFound": "Przedmiot nie znaleziony",
+    "notFoundMessage": "Przedmiot, którego szukasz, nie istnieje.",
+    "errorLoading": "Błąd ładowania przedmiotu",
+    "loadError": "Nie udało się załadować szczegółów przedmiotu.",
+    "backToItems": "Powrót do przedmiotów",
+    "condition": "Stan:",
+    "description": "Opis",
+    "showLess": "Pokaż mniej",
+    "showMore": "Pokaż więcej",
+    "noDescription": "Brak opisu",
+    "category": "Kategoria",
+    "community": "Społeczność",
+    "itemOwner": "Właściciel przedmiotu",
+    "memberSince": "Członek od",
+    "requestToBorrow": "Poproś o wypożyczenie",
+    "share": "Udostępnij",
+    "message": "Wiadomość",
+    "added": "Dodano",
+    "updated": "Zaktualizowano",
+    "search": {
+      "placeholder": "Szukaj przedmiotów...",
+      "filters": "Filtry",
+      "active": "Aktywne",
+      "clearAll": "Wyczyść wszystko",
+      "category": "Kategoria",
+      "allCategories": "Wszystkie kategorie",
+      "condition": "Stan",
+      "anyCondition": "Dowolny stan",
+      "new": "Nowy",
+      "good": "Dobry",
+      "fair": "Przeciętny",
+      "poor": "Zły",
+      "availability": "Dostępność",
+      "anyStatus": "Dowolny status",
+      "available": "Dostępny",
+      "borrowed": "Wypożyczony",
+      "unavailable": "Niedostępny",
+      "searchLabel": "Szukaj:",
+      "categoryLabel": "Kategoria:",
+      "conditionLabel": "Stan:",
+      "statusLabel": "Status:"
+    },
+    "card": {
+      "noDescription": "Brak dostępnego opisu",
+      "condition": "Stan:",
+      "unknown": "Nieznany"
+    }
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "description": "Ta strona będzie pokazywać twoje powiadomienia i alerty.",
+    "underDevelopment": "W trakcie rozwoju - funkcje powiadomień już wkrótce!",
+    "view": "Zobacz"
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "Ta strona pokaże informacje o twoim profilu i umożliwi ich edycję.",
+    "underDevelopment": "W trakcie rozwoju - funkcje zarządzania profilem już wkrótce!",
+    "userNotFound": "Użytkownik nie znaleziony",
+    "basicInformation": "Podstawowe informacje",
+    "email": "Email:",
+    "phone": "Telefon:",
+    "communityStats": "Statystyki społeczności",
+    "recentActivity": "Ostatnia aktywność",
+    "noRecentActivity": "Brak ostatniej aktywności do wyświetlenia.",
+    "editProfile": "Edytuj profil",
+    "joined": "Dołączył {{date}}",
+    "itemsShared": "Udostępnione przedmioty",
+    "communitiesJoined": "Społeczności"
+  },
+  "errors": {
+    "somethingWentWrong": "Coś poszło nie tak!",
+    "tryRefresh": "Spróbuj odświeżyć stronę.",
+    "goHome": "Przejdź na stronę główną",
+    "notFound": "Strona nie znaleziona",
+    "notFoundMessage": "Strona, której szukasz, nie istnieje.",
+    "pageNotFound": "Strona nie znaleziona",
+    "sorryMessage": "Przepraszamy, nie mogliśmy znaleźć strony, której szukasz. Mogła zostać przeniesiona lub nie istnieje.",
+    "goBack": "Wróć",
+    "mistakeMessage": "Jeśli uważasz, że to pomyłka, proszę",
+    "contactUs": "skontaktuj się z nami"
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "close": "Zamknij",
+    "confirm": "Potwierdź",
+    "yes": "Tak",
+    "no": "Nie",
+    "tryAgain": "Spróbuj ponownie",
+    "create": "Utwórz",
+    "join": "Dołącz",
+    "view": "Zobacz",
+    "browse": "Przeglądaj",
+    "add": "Dodaj"
+  }
+}

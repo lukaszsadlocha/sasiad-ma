@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Upload, Users, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useApiMutation } from '../../hooks/useApi';
@@ -17,6 +18,7 @@ interface CommunityFormData {
 
 const CreateCommunityForm: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -31,11 +33,11 @@ const CreateCommunityForm: React.FC = () => {
     communityService.create,
     {
       onSuccess: (community) => {
-        toast.success('Community created successfully!');
+        toast.success(t('community.create.successMessage'));
         navigate(`/communities/${community.id}`);
       },
       onError: (error: any) => {
-        const message = error?.response?.data?.message || 'Failed to create community';
+        const message = error?.response?.data?.message || t('community.create.errorMessage');
         toast.error(message);
       },
     }
@@ -46,14 +48,14 @@ const CreateCommunityForm: React.FC = () => {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        toast.error('Please select a valid image file');
+        toast.error(t('community.create.invalidImageFile'));
         e.target.value = '';
         return;
       }
 
       // Validate file size (2MB limit for better performance)
       if (file.size > 2 * 1024 * 1024) {
-        toast.error('Image size must be less than 2MB');
+        toast.error(t('community.create.imageTooLarge'));
         e.target.value = '';
         return;
       }
@@ -66,7 +68,7 @@ const CreateCommunityForm: React.FC = () => {
         console.log('Image loaded successfully, size:', result.length, 'characters');
       };
       reader.onerror = () => {
-        toast.error('Error reading image file');
+        toast.error(t('community.create.imageReadError'));
         setImageFile(null);
         setImagePreview(null);
         e.target.value = '';
@@ -108,9 +110,9 @@ const CreateCommunityForm: React.FC = () => {
     <div className="max-w-2xl mx-auto">
       <div className="bg-white shadow rounded-lg">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Create New Community</h2>
+          <h2 className="text-lg font-medium text-gray-900">{t('community.create.title')}</h2>
           <p className="mt-1 text-sm text-gray-600">
-            Start a new community to share items with your neighbors
+            {t('community.create.subtitle')}
           </p>
         </div>
 
@@ -118,7 +120,7 @@ const CreateCommunityForm: React.FC = () => {
           {/* Community Image */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Community Image (Optional)
+              {t('community.create.imageLabel')}
             </label>
             <div className="flex items-center space-x-4">
               <div className="relative w-24 h-24 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
@@ -148,7 +150,7 @@ const CreateCommunityForm: React.FC = () => {
                   className="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <Upload className="h-4 w-4 mr-2" />
-                  {imagePreview ? 'Change Image' : 'Upload Image'}
+                  {imagePreview ? t('community.create.changeImage') : t('community.create.uploadImage')}
                 </label>
                 <input
                   id="image-upload"
@@ -158,7 +160,7 @@ const CreateCommunityForm: React.FC = () => {
                   className="hidden"
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                  PNG, JPG up to 2MB
+                  {t('community.create.imageHelp')}
                 </p>
               </div>
             </div>
@@ -167,24 +169,24 @@ const CreateCommunityForm: React.FC = () => {
           {/* Community Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Community Name *
+              {t('community.create.nameLabel')}
             </label>
             <div className="mt-1">
               <input
                 {...register('name', {
-                  required: 'Community name is required',
+                  required: t('community.create.nameRequired'),
                   minLength: {
                     value: 3,
-                    message: 'Name must be at least 3 characters',
+                    message: t('community.create.nameMinLength'),
                   },
                   maxLength: {
                     value: 50,
-                    message: 'Name must be less than 50 characters',
+                    message: t('community.create.nameMaxLength'),
                   },
                 })}
                 type="text"
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="Enter community name"
+                placeholder={t('community.create.namePlaceholder')}
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -195,24 +197,24 @@ const CreateCommunityForm: React.FC = () => {
           {/* Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Description *
+              {t('community.create.descriptionLabel')}
             </label>
             <div className="mt-1">
               <textarea
                 {...register('description', {
-                  required: 'Description is required',
+                  required: t('community.create.descriptionRequired'),
                   minLength: {
                     value: 10,
-                    message: 'Description must be at least 10 characters',
+                    message: t('community.create.descriptionMinLength'),
                   },
                   maxLength: {
                     value: 500,
-                    message: 'Description must be less than 500 characters',
+                    message: t('community.create.descriptionMaxLength'),
                   },
                 })}
                 rows={4}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                placeholder="Describe your community, its purpose, and what makes it special"
+                placeholder={t('community.create.descriptionPlaceholder')}
               />
               {errors.description && (
                 <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
@@ -223,7 +225,7 @@ const CreateCommunityForm: React.FC = () => {
           {/* Max Members */}
           <div>
             <label htmlFor="maxMembers" className="block text-sm font-medium text-gray-700">
-              Maximum Members (Optional)
+              {t('community.create.maxMembersLabel')}
             </label>
             <div className="mt-1">
               <input
@@ -231,11 +233,11 @@ const CreateCommunityForm: React.FC = () => {
                   valueAsNumber: true,
                   min: {
                     value: 1,
-                    message: 'Minimum 1 member required',
+                    message: t('community.create.maxMembersMin'),
                   },
                   max: {
                     value: 10000,
-                    message: 'Maximum 10,000 members allowed',
+                    message: t('community.create.maxMembersMax'),
                   },
                 })}
                 type="number"
@@ -247,7 +249,7 @@ const CreateCommunityForm: React.FC = () => {
                 <p className="mt-1 text-sm text-red-600">{errors.maxMembers.message}</p>
               )}
               <p className="mt-1 text-sm text-gray-500">
-                Leave empty for default limit of 1000 members
+                {t('community.create.maxMembersHelp')}
               </p>
             </div>
           </div>
@@ -264,10 +266,10 @@ const CreateCommunityForm: React.FC = () => {
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="isPublic" className="font-medium text-gray-700">
-                  Public Community
+                  {t('community.create.publicLabel')}
                 </label>
                 <p className="text-gray-500">
-                  Anyone can discover and join this community. If unchecked, only people with invitation code can join.
+                  {t('community.create.publicHelp')}
                 </p>
               </div>
             </div>
@@ -280,7 +282,7 @@ const CreateCommunityForm: React.FC = () => {
               onClick={() => navigate('/communities')}
               className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Cancel
+{t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -290,10 +292,10 @@ const CreateCommunityForm: React.FC = () => {
               {createCommunityMutation.isPending ? (
                 <>
                   <LoadingSpinner className="w-4 h-4 mr-2" />
-                  Creating...
+{t('community.create.creating')}
                 </>
               ) : (
-                'Create Community'
+t('community.create.createButton')
               )}
             </button>
           </div>

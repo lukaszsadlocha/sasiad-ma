@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Plus, Search, Filter } from 'lucide-react';
 import { useApiQuery } from '../../hooks/useApi';
 import { itemService } from '../../services/itemService';
@@ -11,6 +12,7 @@ import ItemSearch from './ItemSearch';
 const ItemList: React.FC = () => {
   const navigate = useNavigate();
   const { currentCommunity } = useCommunity();
+  const { t } = useTranslation();
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -62,12 +64,12 @@ const ItemList: React.FC = () => {
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="text-red-600 mb-4">Failed to load items</div>
+        <div className="text-red-600 mb-4">{t('items.loadError')}</div>
         <button
           onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          Try Again
+          {t('common.tryAgain')}
         </button>
       </div>
     );
@@ -92,7 +94,7 @@ const ItemList: React.FC = () => {
             className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
           >
             <Search className="h-4 w-4 mr-2" />
-            Search
+{t('items.search.placeholder')}
           </button>
 
           <button
@@ -100,7 +102,7 @@ const ItemList: React.FC = () => {
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Item
+{t('items.addButton')}
           </button>
         </div>
       </div>
@@ -112,7 +114,7 @@ const ItemList: React.FC = () => {
             <div>
               <input
                 type="text"
-                placeholder="Search items..."
+                placeholder={t('items.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
@@ -125,7 +127,7 @@ const ItemList: React.FC = () => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               >
-                <option value="">All Categories</option>
+                <option value="">{t('items.search.allCategories')}</option>
                 {categories.map(category => (
                   <option key={category} value={category}>
                     {category}
@@ -147,7 +149,7 @@ const ItemList: React.FC = () => {
                 }}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Clear filters
+{t('items.search.clearAll')}
               </button>
             </div>
           )}
@@ -165,7 +167,7 @@ const ItemList: React.FC = () => {
             )}
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {searchQuery || selectedCategory ? 'No items found' : 'No items yet'}
+            {searchQuery || selectedCategory ? t('items.noItemsTitle') : t('items.myTitle')}
           </h3>
           <p className="text-gray-600 mb-6">
             {searchQuery || selectedCategory
@@ -179,7 +181,7 @@ const ItemList: React.FC = () => {
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add First Item
+{t('items.addButton')}
             </button>
           )}
         </div>

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-gray-800 text-white mt-auto">
@@ -10,7 +12,7 @@ const Footer: React.FC = () => {
           <div className="mb-4 md:mb-0">
             <h3 className="text-lg font-semibold">Sasiad-Ma</h3>
             <p className="text-sm text-gray-300">
-              Strengthening neighborhood bonds through sharing
+              {t('footer.tagline')}
             </p>
           </div>
 
@@ -20,32 +22,32 @@ const Footer: React.FC = () => {
                 href="#"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                About
+                {t('footer.about')}
               </a>
               <a
                 href="#"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Privacy
+                {t('footer.privacy')}
               </a>
               <a
                 href="#"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Terms
+                {t('footer.terms')}
               </a>
               <a
                 href="#"
                 className="text-gray-300 hover:text-white transition-colors"
               >
-                Contact
+                {t('footer.contact')}
               </a>
             </div>
           </div>
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
-          <p>&copy; {currentYear} Sasiad-Ma. All rights reserved.</p>
+          <p>{t('footer.copyright', { year: currentYear })}</p>
         </div>
       </div>
     </footer>

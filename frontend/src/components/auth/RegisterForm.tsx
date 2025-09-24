@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { RegisterRequest } from '../../types/auth';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
@@ -11,6 +12,7 @@ const RegisterForm: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register: registerUser, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -38,15 +40,15 @@ const RegisterForm: React.FC = () => {
             <User className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+            {t('auth.register.title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            {t('auth.register.subtitle')}{' '}
             <Link
               to="/login"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              sign in to your existing account
+              {t('auth.register.signInExisting')}
             </Link>
           </p>
         </div>
@@ -56,21 +58,21 @@ const RegisterForm: React.FC = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                  First Name
+                  {t('auth.register.firstName')}
                 </label>
                 <div className="mt-1">
                   <input
                     {...register('firstName', {
-                      required: 'First name is required',
+                      required: t('auth.register.firstNameRequired'),
                       minLength: {
                         value: 2,
-                        message: 'First name must be at least 2 characters'
+                        message: t('auth.register.firstNameMinLength')
                       }
                     })}
                     type="text"
                     autoComplete="given-name"
                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder="First name"
+                    placeholder={t('auth.register.enterFirstName')}
                   />
                   {errors.firstName && (
                     <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
@@ -80,21 +82,21 @@ const RegisterForm: React.FC = () => {
 
               <div>
                 <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                  Last Name
+                  {t('auth.register.lastName')}
                 </label>
                 <div className="mt-1">
                   <input
                     {...register('lastName', {
-                      required: 'Last name is required',
+                      required: t('auth.register.lastNameRequired'),
                       minLength: {
                         value: 2,
-                        message: 'Last name must be at least 2 characters'
+                        message: t('auth.register.lastNameMinLength')
                       }
                     })}
                     type="text"
                     autoComplete="family-name"
                     className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder="Last name"
+                    placeholder={t('auth.register.enterLastName')}
                   />
                   {errors.lastName && (
                     <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
@@ -105,22 +107,22 @@ const RegisterForm: React.FC = () => {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.register.email')}
               </label>
               <div className="mt-1 relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   {...register('email', {
-                    required: 'Email is required',
+                    required: t('auth.register.emailRequired'),
                     pattern: {
                       value: /^\S+@\S+$/i,
-                      message: 'Please enter a valid email address'
+                      message: t('auth.register.emailInvalid')
                     }
                   })}
                   type="email"
                   autoComplete="email"
                   className="pl-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your email"
+                  placeholder={t('auth.register.enterEmail')}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -130,26 +132,26 @@ const RegisterForm: React.FC = () => {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('auth.register.password')}
               </label>
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   {...register('password', {
-                    required: 'Password is required',
+                    required: t('auth.register.passwordRequired'),
                     minLength: {
                       value: 8,
-                      message: 'Password must be at least 8 characters'
+                      message: t('auth.register.passwordMinLength')
                     },
                     pattern: {
                       value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                      message: 'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+                      message: t('auth.register.passwordStrength')
                     }
                   })}
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   className="pl-10 pr-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Create a password"
+                  placeholder={t('auth.register.createPassword')}
                 />
                 <button
                   type="button"
@@ -170,19 +172,19 @@ const RegisterForm: React.FC = () => {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password
+                {t('auth.register.confirmPassword')}
               </label>
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   {...register('confirmPassword', {
-                    required: 'Please confirm your password',
-                    validate: (value) => value === password || 'Passwords do not match'
+                    required: t('auth.register.confirmPasswordRequired'),
+                    validate: (value) => value === password || t('auth.register.passwordMismatch')
                   })}
                   type={showConfirmPassword ? 'text' : 'password'}
                   autoComplete="new-password"
                   className="pl-10 pr-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Confirm your password"
+                  placeholder={t('auth.register.confirmYourPassword')}
                 />
                 <button
                   type="button"
@@ -208,18 +210,18 @@ const RegisterForm: React.FC = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? <LoadingSpinner size="sm" /> : 'Create Account'}
+              {isLoading ? <LoadingSpinner size="sm" /> : t('auth.register.createAccount')}
             </button>
           </div>
 
           <div className="text-center text-sm text-gray-600">
-            By creating an account, you agree to our{' '}
+            {t('auth.register.termsAgreement')}{' '}
             <Link to="/terms" className="text-blue-600 hover:text-blue-500">
-              Terms of Service
+              {t('auth.register.termsOfService')}
             </Link>{' '}
-            and{' '}
+            {t('auth.register.and')}{' '}
             <Link to="/privacy" className="text-blue-600 hover:text-blue-500">
-              Privacy Policy
+              {t('auth.register.privacyPolicy')}
             </Link>
           </div>
         </form>

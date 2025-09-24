@@ -1,15 +1,18 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const NotificationsPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Notifications</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('notifications.title')}</h1>
         <p className="text-gray-600 mb-6">
-          This page will show your notifications and alerts.
+          {t('notifications.description')}
         </p>
         <div className="text-sm text-gray-500">
-          🚧 Under development - Notification features coming soon!
+          🚧 {t('notifications.underDevelopment')}
         </div>
       </div>
     </div>

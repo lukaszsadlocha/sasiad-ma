@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Users, MapPin, Settings } from 'lucide-react';
 import type { Community } from '../../types/community';
 import { formatters } from '../../utils/formatters';
@@ -14,6 +15,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
   showActions = true
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleViewCommunity = () => {
     navigate(`/communities/${community.id}`);
@@ -74,14 +76,14 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
         </div>
 
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {community.description || 'No description available'}
+          {community.description || t('community.card.noDescription')}
         </p>
 
         <div className="space-y-2">
           <div className="flex items-center text-sm text-gray-500">
             <Users className="h-4 w-4 mr-2" />
             <span>
-              {community.activeMembersCount || 0} member{(community.activeMembersCount || 0) !== 1 ? 's' : ''}
+              {community.activeMembersCount || 0} {(community.activeMembersCount || 0) === 1 ? t('community.card.member') : t('community.card.members')}
             </span>
           </div>
 
@@ -95,10 +97,10 @@ const CommunityCard: React.FC<CommunityCardProps> = ({
 
         <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
           <span>
-            Created {formatters.timeAgo(community.createdAt)}
+            {t('community.card.created')} {formatters.timeAgo(community.createdAt)}
           </span>
           <span>
-            {community.isPublic ? 'Public' : 'Private'}
+            {community.isPublic ? t('community.card.public') : t('community.card.private')}
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { LoginRequest } from '../../types/auth';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
@@ -11,6 +12,7 @@ const LoginForm: React.FC = () => {
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const from = location.state?.from?.pathname || '/dashboard';
 
@@ -37,15 +39,15 @@ const LoginForm: React.FC = () => {
             <Mail className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            {t('auth.login.title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            {t('auth.login.subtitle')}{' '}
             <Link
               to="/register"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              create a new account
+              {t('auth.login.createNewAccount')}
             </Link>
           </p>
         </div>
@@ -54,22 +56,22 @@ const LoginForm: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t('auth.login.email')}
               </label>
               <div className="mt-1 relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   {...register('email', {
-                    required: 'Email is required',
+                    required: t('auth.login.emailRequired'),
                     pattern: {
                       value: /^\S+@\S+$/i,
-                      message: 'Please enter a valid email address'
+                      message: t('auth.login.emailInvalid')
                     }
                   })}
                   type="email"
                   autoComplete="email"
                   className="pl-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your email"
+                  placeholder={t('auth.login.enterEmail')}
                 />
                 {errors.email && (
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -79,22 +81,22 @@ const LoginForm: React.FC = () => {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t('auth.login.password')}
               </label>
               <div className="mt-1 relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   {...register('password', {
-                    required: 'Password is required',
+                    required: t('auth.login.passwordRequired'),
                     minLength: {
                       value: 6,
-                      message: 'Password must be at least 6 characters'
+                      message: t('auth.login.passwordMinLength')
                     }
                   })}
                   type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   className="pl-10 pr-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your password"
+                  placeholder={t('auth.login.enterPassword')}
                 />
                 <button
                   type="button"
@@ -120,7 +122,7 @@ const LoginForm: React.FC = () => {
                 to="/forgot-password"
                 className="font-medium text-blue-600 hover:text-blue-500"
               >
-                Forgot your password?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
           </div>
@@ -131,7 +133,7 @@ const LoginForm: React.FC = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? <LoadingSpinner size="sm" /> : 'Sign in'}
+              {isLoading ? <LoadingSpinner size="sm" /> : t('auth.login.signIn')}
             </button>
           </div>
         </form>

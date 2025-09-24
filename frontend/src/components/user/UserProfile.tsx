@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Edit, MapPin, Calendar, Star, Package, Users } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { formatters } from '../../utils/formatters';
@@ -16,6 +17,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
 }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // For now, we'll use the current user. In a full implementation,
   // you'd fetch user data based on userId
@@ -24,7 +26,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   if (!profileUser) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600">User not found</p>
+        <p className="text-gray-600">{t('profile.userNotFound')}</p>
       </div>
     );
   }
@@ -76,7 +78,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                   className="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   <Edit className="h-4 w-4 mr-2" />
-                  Edit Profile
+                  {t('profile.editProfile')}
                 </button>
               )}
             </div>
@@ -88,18 +90,18 @@ const UserProfile: React.FC<UserProfileProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Basic Info */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
+              <h3 className="text-lg font-medium text-gray-900">{t('profile.basicInformation')}</h3>
 
               {profileUser.email && (
                 <div className="flex items-center text-sm text-gray-600">
-                  <span className="font-medium w-24">Email:</span>
+                  <span className="font-medium w-24">{t('profile.email')}</span>
                   <span>{profileUser.email}</span>
                 </div>
               )}
 
               {profileUser.phone && (
                 <div className="flex items-center text-sm text-gray-600">
-                  <span className="font-medium w-24">Phone:</span>
+                  <span className="font-medium w-24">{t('profile.phone')}</span>
                   <span>{formatters.phone(profileUser.phone)}</span>
                 </div>
               )}
@@ -113,13 +115,13 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
               <div className="flex items-center text-sm text-gray-600">
                 <Calendar className="h-4 w-4 mr-2" />
-                <span>Joined {formatters.date(profileUser.createdAt)}</span>
+                <span>{t('profile.joined', { date: formatters.date(profileUser.createdAt) })}</span>
               </div>
             </div>
 
             {/* Stats & Reputation */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">Community Stats</h3>
+              <h3 className="text-lg font-medium text-gray-900">{t('profile.communityStats')}</h3>
 
               <ReputationDisplay
                 score={profileUser.reputation || 0}
@@ -132,7 +134,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                   <div className="text-2xl font-bold text-gray-900">
                     {profileUser.itemsShared || 0}
                   </div>
-                  <div className="text-sm text-gray-600">Items Shared</div>
+                  <div className="text-sm text-gray-600">{t('profile.itemsShared')}</div>
                 </div>
 
                 <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -140,7 +142,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                   <div className="text-2xl font-bold text-gray-900">
                     {profileUser.communitiesJoined || 0}
                   </div>
-                  <div className="text-sm text-gray-600">Communities</div>
+                  <div className="text-sm text-gray-600">{t('profile.communitiesJoined')}</div>
                 </div>
               </div>
             </div>
@@ -149,9 +151,9 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
         {/* Recent Activity - Placeholder */}
         <div className="border-t border-gray-200 px-6 py-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">{t('profile.recentActivity')}</h3>
           <div className="text-sm text-gray-600">
-            No recent activity to display.
+            {t('profile.noRecentActivity')}
           </div>
         </div>
       </div>

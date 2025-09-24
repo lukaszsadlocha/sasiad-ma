@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { User, Clock, Tag } from 'lucide-react';
 import type { Item } from '../../types/item';
 import { formatters } from '../../utils/formatters';
@@ -11,6 +12,7 @@ interface ItemCardProps {
 
 const ItemCard: React.FC<ItemCardProps> = ({ item, showActions = true }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleViewItem = () => {
     navigate(`/items/${item.id}`);
@@ -65,7 +67,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, showActions = true }) => {
         </div>
 
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {item.description || 'No description available'}
+          {item.description || t('items.card.noDescription')}
         </p>
 
         {/* Item Details */}
@@ -85,7 +87,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, showActions = true }) => {
                 {item.condition === 'Fair' && '⚠️'}
                 {item.condition === 'Poor' && '🔴'}
               </span>
-              <span>Condition: {item.condition}</span>
+              <span>{t('items.card.condition')} {item.condition}</span>
             </div>
           )}
         </div>
@@ -94,7 +96,7 @@ const ItemCard: React.FC<ItemCardProps> = ({ item, showActions = true }) => {
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center text-gray-500">
             <User className="h-4 w-4 mr-2" />
-            <span>{item.ownerName || 'Unknown'}</span>
+            <span>{item.ownerName || t('items.card.unknown')}</span>
           </div>
 
           {item.createdAt && (

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useApiQuery, useApiMutation } from '../hooks/useApi';
 import { itemService } from '../services/itemService';
 import { useAuth } from '../hooks/useAuth';
@@ -27,6 +28,7 @@ const ItemsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
@@ -45,8 +47,8 @@ const ItemsPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Item Not Found</h1>
-          <p className="text-gray-600">The item you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('items.notFound')}</h1>
+          <p className="text-gray-600">{t('items.notFoundMessage')}</p>
         </div>
       </div>
     );
@@ -66,13 +68,13 @@ const ItemsPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Item</h1>
-          <p className="text-gray-600">Failed to load item details.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('items.errorLoading')}</h1>
+          <p className="text-gray-600">{t('items.loadError')}</p>
           <button
             onClick={() => navigate('/items')}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Back to Items
+{t('items.backToItems')}
           </button>
         </div>
       </div>
@@ -139,7 +141,7 @@ const ItemsPage: React.FC = () => {
             onClick={() => navigate('/items')}
             className="hover:text-blue-600"
           >
-            Items
+{t('items.title')}
           </button>
           <span>/</span>
           <span className="text-gray-900">{item.name}</span>
@@ -245,14 +247,14 @@ const ItemsPage: React.FC = () => {
 
                 <div className="flex items-center text-sm text-gray-600">
                   <span className="mr-2">{getConditionIcon(item.condition)}</span>
-                  <span>Condition: {item.condition}</span>
+                  <span>{t('items.condition')} {item.condition}</span>
                 </div>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Description</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('items.description')}</h2>
               <div className="text-gray-700">
                 {item.description ? (
                   <div>
@@ -264,12 +266,12 @@ const ItemsPage: React.FC = () => {
                         onClick={() => setShowFullDescription(!showFullDescription)}
                         className="text-blue-600 text-sm hover:text-blue-800 mt-1"
                       >
-                        {showFullDescription ? 'Show less' : 'Show more'}
+                        {showFullDescription ? t('items.showLess') : t('items.showMore')}
                       </button>
                     )}
                   </div>
                 ) : (
-                  <p className="text-gray-500 italic">No description provided</p>
+                  <p className="text-gray-500 italic">{t('items.noDescription')}</p>
                 )}
               </div>
             </div>
@@ -277,7 +279,7 @@ const ItemsPage: React.FC = () => {
             {/* Item Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Category</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">{t('items.category')}</h3>
                 <div className="flex items-center text-gray-900">
                   <Tag className="h-4 w-4 mr-2" />
                   <span>{item.category}</span>
@@ -285,7 +287,7 @@ const ItemsPage: React.FC = () => {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Community</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">{t('items.community')}</h3>
                 <div className="flex items-center text-gray-900">
                   <MapPin className="h-4 w-4 mr-2" />
                   <span>{item.communityName}</span>
@@ -295,7 +297,7 @@ const ItemsPage: React.FC = () => {
 
             {/* Owner Info */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Item Owner</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-3">{t('items.itemOwner')}</h3>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                   {item.ownerProfileImageUrl ? (
@@ -313,7 +315,7 @@ const ItemsPage: React.FC = () => {
                 <div>
                   <p className="font-medium text-gray-900">{item.ownerName}</p>
                   <p className="text-sm text-gray-600">
-                    Member since {formatters.timeAgo(item.createdAt)}
+                    {t('items.memberSince')} {formatters.timeAgo(item.createdAt)}
                   </p>
                 </div>
               </div>
@@ -326,7 +328,7 @@ const ItemsPage: React.FC = () => {
                   onClick={() => navigate(`/items/${item.id}/request`)}
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                 >
-                  Request to Borrow
+{t('items.requestToBorrow')}
                 </button>
               )}
 
@@ -347,7 +349,7 @@ const ItemsPage: React.FC = () => {
                   className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                 >
                   <Share2 className="h-4 w-4 mr-2" />
-                  Share
+{t('items.share')}
                 </button>
 
                 {!isOwner && (
@@ -356,7 +358,7 @@ const ItemsPage: React.FC = () => {
                     className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                   >
                     <MessageCircle className="h-4 w-4 mr-2" />
-                    Message
+{t('items.message')}
                   </button>
                 )}
               </div>
@@ -365,8 +367,8 @@ const ItemsPage: React.FC = () => {
             {/* Meta Info */}
             <div className="pt-4 border-t border-gray-200 text-sm text-gray-500">
               <div className="flex justify-between">
-                <span>Added {formatters.timeAgo(item.createdAt)}</span>
-                <span>Updated {formatters.timeAgo(item.updatedAt)}</span>
+                <span>{t('items.added')} {formatters.timeAgo(item.createdAt)}</span>
+                <span>{t('items.updated')} {formatters.timeAgo(item.updatedAt)}</span>
               </div>
             </div>
           </div>

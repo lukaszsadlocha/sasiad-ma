@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Users, Package, Bell, Plus, TrendingUp } from 'lucide-react';
 import { useApiQuery } from '../hooks/useApi';
 import { dashboardService } from '../services/dashboardService';
@@ -8,6 +9,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const {
     data: dashboardStats,
@@ -21,28 +23,28 @@ const DashboardPage: React.FC = () => {
 
   const stats = [
     {
-      name: 'Communities',
+      name: t('dashboard.stats.communities'),
       value: dashboardStats?.communitiesCount?.toString() || '0',
       icon: Users,
       color: 'bg-blue-500',
       href: '/communities'
     },
     {
-      name: 'Your Items',
+      name: t('dashboard.stats.yourItems'),
       value: dashboardStats?.itemsCount?.toString() || '0',
       icon: Package,
       color: 'bg-green-500',
       href: '/items'
     },
     {
-      name: 'Active Borrows',
+      name: t('dashboard.stats.activeBorrows'),
       value: dashboardStats?.activeBorrowsCount?.toString() || '0',
       icon: TrendingUp,
       color: 'bg-purple-500',
       href: '/items'
     },
     {
-      name: 'Notifications',
+      name: t('dashboard.stats.notifications'),
       value: dashboardStats?.unreadNotificationsCount?.toString() || '0',
       icon: Bell,
       color: 'bg-yellow-500',
@@ -52,22 +54,22 @@ const DashboardPage: React.FC = () => {
 
   const quickActions = [
     {
-      name: 'Add New Item',
-      description: 'Share an item with your community',
+      name: t('dashboard.quickActions.addNewItem.title'),
+      description: t('dashboard.quickActions.addNewItem.description'),
       icon: Package,
       href: '/items/new',
       color: 'bg-blue-500'
     },
     {
-      name: 'Join Community',
-      description: 'Join a new neighborhood group',
+      name: t('dashboard.quickActions.joinCommunity.title'),
+      description: t('dashboard.quickActions.joinCommunity.description'),
       icon: Users,
       href: '/communities/join',
       color: 'bg-green-500'
     },
     {
-      name: 'Browse Items',
-      description: 'Find items to borrow',
+      name: t('dashboard.quickActions.browseItems.title'),
+      description: t('dashboard.quickActions.browseItems.description'),
       icon: TrendingUp,
       href: '/items',
       color: 'bg-purple-500'
@@ -87,10 +89,10 @@ const DashboardPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Unable to load dashboard
+            {t('dashboard.errors.loadingTitle')}
           </h2>
           <p className="text-gray-600">
-            Please try refreshing the page
+            {t('dashboard.errors.loadingMessage')}
           </p>
         </div>
       </div>
@@ -103,10 +105,10 @@ const DashboardPage: React.FC = () => {
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {user?.firstName}! 👋
+            {t('dashboard.welcome', { name: user?.firstName })}
           </h1>
           <p className="text-gray-600 mt-2">
-            Here's what's happening in your communities
+            {t('dashboard.subtitle')}
           </p>
         </div>
 
@@ -136,7 +138,7 @@ const DashboardPage: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('dashboard.quickActions.title')}</h2>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -162,7 +164,7 @@ const DashboardPage: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('dashboard.recentActivity.title')}</h2>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
@@ -172,9 +174,9 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-900">
-                        Your <strong>Power Drill</strong> was returned by John
+                        {t('dashboard.recentActivity.examples.returned', { item: 'Power Drill', user: 'John' })}
                       </p>
-                      <p className="text-xs text-gray-500">2 hours ago</p>
+                      <p className="text-xs text-gray-500">{t('dashboard.recentActivity.timeAgo.hoursAgo', { count: 2 })}</p>
                     </div>
                   </div>
 
@@ -184,9 +186,9 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-900">
-                        Sarah joined <strong>Oak Street Community</strong>
+                        {t('dashboard.recentActivity.examples.joined', { user: 'Sarah', community: 'Oak Street Community' })}
                       </p>
-                      <p className="text-xs text-gray-500">1 day ago</p>
+                      <p className="text-xs text-gray-500">{t('dashboard.recentActivity.timeAgo.dayAgo')}</p>
                     </div>
                   </div>
 
@@ -196,9 +198,9 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-900">
-                        New borrow request for your <strong>Ladder</strong>
+                        {t('dashboard.recentActivity.examples.newRequest', { item: 'Ladder' })}
                       </p>
-                      <p className="text-xs text-gray-500">2 days ago</p>
+                      <p className="text-xs text-gray-500">{t('dashboard.recentActivity.timeAgo.daysAgo', { count: 2 })}</p>
                     </div>
                   </div>
                 </div>
@@ -208,7 +210,7 @@ const DashboardPage: React.FC = () => {
                     to="/notifications"
                     className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                   >
-                    View all activity →
+                    {t('dashboard.recentActivity.viewAll')}
                   </Link>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useApiQuery, useApiMutation } from '../hooks/useApi';
 import { communityService } from '../services/communityService';
 import { useAuth } from '../hooks/useAuth';
@@ -25,6 +26,7 @@ const CommunityPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [showInvitationCode, setShowInvitationCode] = useState(false);
 
   const {
@@ -42,11 +44,11 @@ const CommunityPage: React.FC = () => {
     () => communityService.leave(id!),
     {
       onSuccess: () => {
-        toast.success('Left community successfully');
+        toast.success(t('community.leftSuccess'));
         navigate('/communities');
       },
       onError: (error: any) => {
-        toast.error(error?.response?.data?.message || 'Failed to leave community');
+        toast.error(error?.response?.data?.message || t('community.leftError'));
       },
     }
   );
@@ -56,10 +58,10 @@ const CommunityPage: React.FC = () => {
     {
       onSuccess: (data) => {
         refetchCommunity();
-        toast.success('New invitation code generated');
+        toast.success(t('community.newCodeGenerated'));
       },
       onError: (error: any) => {
-        toast.error(error?.response?.data?.message || 'Failed to generate invitation code');
+        toast.error(error?.response?.data?.message || t('community.generateCodeError'));
       },
     }
   );
@@ -68,8 +70,8 @@ const CommunityPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Community Not Found</h1>
-          <p className="text-gray-600">The community you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('community.notFound')}</h1>
+          <p className="text-gray-600">{t('community.notFoundMessage')}</p>
         </div>
       </div>
     );
@@ -89,13 +91,13 @@ const CommunityPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Error Loading Community</h1>
-          <p className="text-gray-600">Failed to load community details.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('community.errorLoading')}</h1>
+          <p className="text-gray-600">{t('community.loadError')}</p>
           <button
             onClick={() => navigate('/communities')}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Back to Communities
+            {t('community.backToCommunities')}
           </button>
         </div>
       </div>
@@ -109,14 +111,14 @@ const CommunityPage: React.FC = () => {
   const handleCopyInvitationCode = async () => {
     try {
       await navigator.clipboard.writeText(community.invitationCode);
-      toast.success('Invitation code copied to clipboard');
+      toast.success(t('community.codeCopied'));
     } catch (error) {
-      toast.error('Failed to copy invitation code');
+      toast.error(t('community.copyCodeError'));
     }
   };
 
   const handleLeaveCommunity = () => {
-    if (window.confirm('Are you sure you want to leave this community?')) {
+    if (window.confirm(t('community.leaveConfirm'))) {
       leaveCommunityMutation.mutate();
     }
   };
@@ -170,7 +172,7 @@ const CommunityPage: React.FC = () => {
                     className="flex items-center px-3 py-2 text-red-600 border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50"
                   >
                     <LogOut className="h-4 w-4 mr-1" />
-                    Leave
+{t('community.leave')}
                   </button>
                 </div>
               )}
@@ -183,7 +185,7 @@ const CommunityPage: React.FC = () => {
                   <Users className="h-5 w-5 text-gray-600" />
                 </div>
                 <div className="text-lg font-semibold text-gray-900">{community.activeMembersCount}</div>
-                <div className="text-xs text-gray-600">Members</div>
+                <div className="text-xs text-gray-600">{t('community.members')}</div>
               </div>
 
               <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -195,9 +197,9 @@ const CommunityPage: React.FC = () => {
                   )}
                 </div>
                 <div className="text-lg font-semibold text-gray-900">
-                  {community.isPublic ? 'Public' : 'Private'}
+                  {community.isPublic ? t('community.card.public') : t('community.card.private')}
                 </div>
-                <div className="text-xs text-gray-600">Visibility</div>
+                <div className="text-xs text-gray-600">{t('community.visibility')}</div>
               </div>
 
               <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -205,7 +207,7 @@ const CommunityPage: React.FC = () => {
                   <UserPlus className="h-5 w-5 text-gray-600" />
                 </div>
                 <div className="text-lg font-semibold text-gray-900">{community.maxMembers}</div>
-                <div className="text-xs text-gray-600">Max Members</div>
+                <div className="text-xs text-gray-600">{t('community.maxMembers')}</div>
               </div>
 
               <div className="text-center p-3 bg-gray-50 rounded-lg">
@@ -215,7 +217,7 @@ const CommunityPage: React.FC = () => {
                 <div className="text-lg font-semibold text-gray-900">
                   {formatters.timeAgo(community.createdAt)}
                 </div>
-                <div className="text-xs text-gray-600">Created</div>
+                <div className="text-xs text-gray-600">{t('community.created')}</div>
               </div>
             </div>
 
@@ -233,14 +235,14 @@ const CommunityPage: React.FC = () => {
             {isUserMember && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-blue-900">Invitation Code</h3>
+                  <h3 className="font-medium text-blue-900">{t('community.invitationCode')}</h3>
                   {isAdmin && (
                     <button
                       onClick={() => generateInvitationMutation.mutate()}
                       disabled={generateInvitationMutation.isPending}
                       className="text-blue-600 text-sm hover:text-blue-800 disabled:opacity-50"
                     >
-                      Generate New
+{t('community.generateNew')}
                     </button>
                   )}
                 </div>
@@ -252,20 +254,20 @@ const CommunityPage: React.FC = () => {
                     onClick={() => setShowInvitationCode(!showInvitationCode)}
                     className="px-3 py-2 text-blue-600 border border-blue-300 rounded hover:bg-blue-50"
                   >
-                    {showInvitationCode ? 'Hide' : 'Show'}
+                    {showInvitationCode ? t('community.hide') : t('community.show')}
                   </button>
                   {showInvitationCode && (
                     <button
                       onClick={handleCopyInvitationCode}
                       className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                      title="Copy invitation code"
+                      title={t('community.copyCode')}
                     >
                       <Copy className="h-4 w-4" />
                     </button>
                   )}
                 </div>
                 <p className="text-xs text-blue-700 mt-1">
-                  Share this code with people you want to invite to this community.
+{t('community.shareCodeText')}
                 </p>
               </div>
             )}
@@ -275,7 +277,7 @@ const CommunityPage: React.FC = () => {
         {/* Members List */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Members ({community.activeMembersCount})</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t('community.members')} ({community.activeMembersCount})</h2>
           </div>
 
           <div className="p-6">
@@ -305,7 +307,7 @@ const CommunityPage: React.FC = () => {
                               {member.userFirstName} {member.userLastName}
                             </p>
                             {member.isAdmin && (
-                              <Crown className="h-4 w-4 text-yellow-500" title="Admin" />
+                              <Crown className="h-4 w-4 text-yellow-500" title={t('community.admin')} />
                             )}
                           </div>
                           <p className="text-sm text-gray-600">{member.userEmail}</p>
@@ -314,7 +316,7 @@ const CommunityPage: React.FC = () => {
 
                       <div className="text-right">
                         <p className="text-sm text-gray-600">
-                          Joined {formatters.timeAgo(member.joinedAt)}
+                          {t('community.joined')} {formatters.timeAgo(member.joinedAt)}
                         </p>
                       </div>
                     </div>
@@ -323,7 +325,7 @@ const CommunityPage: React.FC = () => {
             ) : (
               <div className="text-center py-8">
                 <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No members found</p>
+                <p className="text-gray-600">{t('community.noMembersFound')}</p>
               </div>
             )}
           </div>
@@ -335,7 +337,7 @@ const CommunityPage: React.FC = () => {
             onClick={() => navigate('/communities')}
             className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
           >
-            Back to Communities
+            {t('community.backToCommunities')}
           </button>
 
           {!isUserMember && (
@@ -343,7 +345,7 @@ const CommunityPage: React.FC = () => {
               onClick={() => navigate('/communities/join', { state: { invitationCode: '' } })}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              Join Community
+{t('community.joinCommunity')}
             </button>
           )}
         </div>

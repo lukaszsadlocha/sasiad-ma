@@ -1,0 +1,424 @@
+{
+  "app": {
+    "title": "Sąsiad Ma"
+  },
+  "header": {
+    "dashboard": "Dashboard",
+    "communities": "Communities",
+    "items": "Items",
+    "notifications": "Notifications",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "homepage": {
+    "hero": {
+      "title": "Share with Your",
+      "titleHighlight": "Neighbors",
+      "subtitle": "Sąsiad Ma makes it easy to borrow and lend items within your community. Build stronger neighborhood bonds while reducing waste and saving money.",
+      "goToDashboard": "Go to Dashboard",
+      "getStarted": "Get Started",
+      "signIn": "Sign In"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Simple steps to start sharing with your community",
+      "joinCommunity": {
+        "title": "Join a Community",
+        "description": "Create or join your neighborhood community using an invitation code"
+      },
+      "shareItems": {
+        "title": "Share Items",
+        "description": "Add items you're willing to lend or request items you need to borrow"
+      },
+      "buildTrust": {
+        "title": "Build Trust",
+        "description": "Build reputation through successful borrows and returns within your community"
+      }
+    },
+    "benefits": {
+      "title": "Why Choose Sąsiad Ma?",
+      "subtitle": "Benefits for you and your community",
+      "saveMoney": {
+        "title": "Save Money",
+        "description": "Borrow items instead of buying them for one-time use"
+      },
+      "reduceWaste": {
+        "title": "Reduce Waste",
+        "description": "Share resources and reduce environmental impact"
+      },
+      "meetNeighbors": {
+        "title": "Meet Neighbors",
+        "description": "Build stronger relationships within your community"
+      },
+      "freeToUse": {
+        "title": "Free to Use",
+        "description": "No fees or charges - just good neighbors helping neighbors"
+      },
+      "easyCommunication": {
+        "title": "Easy Communication",
+        "description": "Built-in messaging and notifications keep everyone connected"
+      },
+      "trustSafety": {
+        "title": "Trust & Safety",
+        "description": "Reputation system and community-based trust"
+      }
+    },
+    "cta": {
+      "title": "Ready to Start Sharing?",
+      "subtitle": "Join your neighbors and start building a stronger, more connected community today.",
+      "createAccount": "Create Your Account"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to your account",
+      "subtitle": "Or",
+      "createNewAccount": "create a new account",
+      "email": "Email address",
+      "password": "Password",
+      "signIn": "Sign in",
+      "enterEmail": "Enter your email",
+      "enterPassword": "Enter your password",
+      "forgotPassword": "Forgot your password?",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 6 characters"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Or",
+      "signInExisting": "sign in to your existing account",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "createAccount": "Create Account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "firstNameRequired": "First name is required",
+      "firstNameMinLength": "First name must be at least 2 characters",
+      "lastNameRequired": "Last name is required",
+      "lastNameMinLength": "Last name must be at least 2 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordStrength": "Password must contain at least one lowercase letter, one uppercase letter, and one number",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "enterFirstName": "First name",
+      "enterLastName": "Last name",
+      "enterEmail": "Enter your email",
+      "createPassword": "Create a password",
+      "confirmYourPassword": "Confirm your password",
+      "termsAgreement": "By creating an account, you agree to our",
+      "termsOfService": "Terms of Service",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy",
+      "creating": "Creating..."
+    },
+    "google": {
+      "signingIn": "Signing in...",
+      "continueWith": "Continue with Google"
+    },
+    "emailConfirmation": {
+      "invalidLink": "Invalid confirmation link. Please check your email for the correct link.",
+      "successMessage": "Your email has been confirmed successfully! You can now log in to your account.",
+      "linkExpired": "This confirmation link has expired. Please request a new one.",
+      "emailNotAvailable": "Email address not available. Please try registering again.",
+      "resendSuccess": "A new confirmation email has been sent. Please check your inbox.",
+      "resendFailed": "Failed to resend confirmation email. Please try again later.",
+      "confirmingEmail": "Confirming your email...",
+      "emailConfirmed": "Email confirmed!",
+      "confirmationFailed": "Confirmation failed",
+      "expired": "Link expired",
+      "emailConfirmation": "Email confirmation",
+      "goToLogin": "Go to Login",
+      "backToHome": "Back to Home",
+      "sending": "Sending...",
+      "sendNewEmail": "Send new confirmation email",
+      "backToRegistration": "Back to Registration",
+      "tryRegistrationAgain": "Try Registration Again",
+      "contactUs": "contact us"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}! 👋",
+    "subtitle": "Here's what's happening in your communities",
+    "stats": {
+      "communities": "Communities",
+      "yourItems": "Your Items",
+      "activeBorrows": "Active Borrows",
+      "notifications": "Notifications"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "addNewItem": {
+        "title": "Add New Item",
+        "description": "Share an item with your community"
+      },
+      "joinCommunity": {
+        "title": "Join Community",
+        "description": "Join a new neighborhood group"
+      },
+      "browseItems": {
+        "title": "Browse Items",
+        "description": "Find items to borrow"
+      }
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "viewAll": "View all activity →",
+      "examples": {
+        "returned": "Your {{item}} was returned by {{user}}",
+        "joined": "{{user}} joined {{community}}",
+        "newRequest": "New borrow request for your {{item}}"
+      },
+      "timeAgo": {
+        "hoursAgo": "{{count}} hours ago",
+        "dayAgo": "1 day ago",
+        "daysAgo": "{{count}} days ago"
+      }
+    },
+    "errors": {
+      "loadingTitle": "Unable to load dashboard",
+      "loadingMessage": "Please try refreshing the page"
+    }
+  },
+  "language": {
+    "select": "Select Language",
+    "english": "English",
+    "polish": "Polski"
+  },
+  "communities": {
+    "myTitle": "My Communities",
+    "createButton": "Create Community",
+    "joinButton": "Join Community",
+    "noCommunitiesTitle": "No communities yet",
+    "noCommunitiesMessage": "Join an existing community or create your own to start sharing items with your neighbors.",
+    "loadError": "Failed to load communities",
+    "tryAgain": "Try Again"
+  },
+  "items": {
+    "myTitle": "My Items",
+    "addButton": "Add Item",
+    "browseButton": "Browse Items",
+    "noItemsTitle": "No items yet",
+    "noItemsMessage": "Add your first item to start sharing with your community.",
+    "loadError": "Failed to load items"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "loadError": "Failed to load notifications"
+  },
+  "profile": {
+    "editProfile": "Edit Profile",
+    "joined": "Joined {{date}}",
+    "itemsShared": "Items Shared",
+    "communitiesJoined": "Communities"
+  },
+  "footer": {
+    "tagline": "Strengthening neighborhood bonds through sharing",
+    "about": "About",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "copyright": "© {{year}} Sąsiad Ma. All rights reserved."
+  },
+  "errorBoundary": {
+    "title": "Oops! Something went wrong",
+    "message": "We're sorry for the inconvenience. Please try refreshing the page or contact support if the problem persists.",
+    "errorDetails": "Error details",
+    "refreshPage": "Refresh Page",
+    "tryAgain": "Try Again"
+  },
+  "community": {
+    "notFound": "Community Not Found",
+    "notFoundMessage": "The community you're looking for doesn't exist.",
+    "errorLoading": "Error Loading Community",
+    "loadError": "Failed to load community details.",
+    "backToCommunities": "Back to Communities",
+    "joinCommunity": "Join Community",
+    "leave": "Leave",
+    "leaveConfirm": "Are you sure you want to leave this community?",
+    "leftSuccess": "Left community successfully",
+    "leftError": "Failed to leave community",
+    "members": "Members",
+    "visibility": "Visibility",
+    "maxMembers": "Max Members",
+    "created": "Created",
+    "invitationCode": "Invitation Code",
+    "generateNew": "Generate New",
+    "newCodeGenerated": "New invitation code generated",
+    "generateCodeError": "Failed to generate invitation code",
+    "hide": "Hide",
+    "show": "Show",
+    "copyCode": "Copy invitation code",
+    "codeCopied": "Invitation code copied to clipboard",
+    "copyCodeError": "Failed to copy invitation code",
+    "shareCodeText": "Share this code with people you want to invite to this community.",
+    "noMembersFound": "No members found",
+    "admin": "Admin",
+    "joined": "Joined",
+    "create": {
+      "title": "Create New Community",
+      "subtitle": "Start a new community to share items with your neighbors",
+      "successMessage": "Community created successfully!",
+      "errorMessage": "Failed to create community",
+      "invalidImageFile": "Please select a valid image file",
+      "imageTooLarge": "Image size must be less than 2MB",
+      "imageReadError": "Error reading image file",
+      "imageLabel": "Community Image (Optional)",
+      "changeImage": "Change Image",
+      "uploadImage": "Upload Image",
+      "imageHelp": "PNG, JPG up to 2MB",
+      "nameLabel": "Community Name *",
+      "nameRequired": "Community name is required",
+      "nameMinLength": "Name must be at least 3 characters",
+      "nameMaxLength": "Name must be less than 50 characters",
+      "namePlaceholder": "Enter community name",
+      "descriptionLabel": "Description *",
+      "descriptionRequired": "Description is required",
+      "descriptionMinLength": "Description must be at least 10 characters",
+      "descriptionMaxLength": "Description must be less than 500 characters",
+      "descriptionPlaceholder": "Describe your community, its purpose, and what makes it special",
+      "maxMembersLabel": "Maximum Members (Optional)",
+      "maxMembersMin": "Minimum 1 member required",
+      "maxMembersMax": "Maximum 10,000 members allowed",
+      "maxMembersHelp": "Leave empty for default limit of 1000 members",
+      "publicLabel": "Public Community",
+      "publicHelp": "Anyone can discover and join this community. If unchecked, only people with invitation code can join.",
+      "creating": "Creating...",
+      "createButton": "Create Community"
+    },
+    "join": {
+      "title": "Join Community",
+      "subtitle": "Enter an invitation code to join an existing community",
+      "successMessage": "Successfully joined community!",
+      "errorMessage": "Failed to join community",
+      "codeLabel": "Invitation Code",
+      "codeRequired": "Invitation code is required",
+      "codeMinLength": "Invitation code must be at least 3 characters",
+      "codePlaceholder": "Enter invitation code",
+      "back": "Back",
+      "joinButton": "Join Community",
+      "noCode": "Don't have an invitation code?",
+      "createOwn": "Create your own community"
+    },
+    "card": {
+      "noDescription": "No description available",
+      "member": "member",
+      "members": "members",
+      "created": "Created",
+      "public": "Public",
+      "private": "Private"
+    }
+  },
+  "items": {
+    "title": "Items",
+    "notFound": "Item Not Found",
+    "notFoundMessage": "The item you're looking for doesn't exist.",
+    "errorLoading": "Error Loading Item",
+    "loadError": "Failed to load item details.",
+    "backToItems": "Back to Items",
+    "condition": "Condition:",
+    "description": "Description",
+    "showLess": "Show less",
+    "showMore": "Show more",
+    "noDescription": "No description provided",
+    "category": "Category",
+    "community": "Community",
+    "itemOwner": "Item Owner",
+    "memberSince": "Member since",
+    "requestToBorrow": "Request to Borrow",
+    "share": "Share",
+    "message": "Message",
+    "added": "Added",
+    "updated": "Updated",
+    "search": {
+      "placeholder": "Search items...",
+      "filters": "Filters",
+      "active": "Active",
+      "clearAll": "Clear All",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "condition": "Condition",
+      "anyCondition": "Any Condition",
+      "new": "New",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor",
+      "availability": "Availability",
+      "anyStatus": "Any Status",
+      "available": "Available",
+      "borrowed": "Borrowed",
+      "unavailable": "Unavailable",
+      "searchLabel": "Search:",
+      "categoryLabel": "Category:",
+      "conditionLabel": "Condition:",
+      "statusLabel": "Status:"
+    },
+    "card": {
+      "noDescription": "No description available",
+      "condition": "Condition:",
+      "unknown": "Unknown"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "This page will show your notifications and alerts.",
+    "underDevelopment": "Under development - Notification features coming soon!",
+    "view": "View"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "This page will show your profile information and allow you to edit it.",
+    "underDevelopment": "Under development - Profile management features coming soon!",
+    "userNotFound": "User not found",
+    "basicInformation": "Basic Information",
+    "email": "Email:",
+    "phone": "Phone:",
+    "communityStats": "Community Stats",
+    "recentActivity": "Recent Activity",
+    "noRecentActivity": "No recent activity to display.",
+    "editProfile": "Edit Profile",
+    "joined": "Joined {{date}}",
+    "itemsShared": "Items Shared",
+    "communitiesJoined": "Communities"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong!",
+    "tryRefresh": "Try refreshing the page.",
+    "goHome": "Go to Homepage",
+    "notFound": "Page Not Found",
+    "notFoundMessage": "The page you're looking for doesn't exist.",
+    "pageNotFound": "Page Not Found",
+    "sorryMessage": "Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.",
+    "goBack": "Go Back",
+    "mistakeMessage": "If you think this is a mistake, please",
+    "contactUs": "contact us"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "tryAgain": "Try Again",
+    "create": "Create",
+    "join": "Join",
+    "view": "View",
+    "browse": "Browse",
+    "add": "Add"
+  }
+}
