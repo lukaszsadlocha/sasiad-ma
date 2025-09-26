@@ -1,4 +1,5 @@
 using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Core.Entities;
 

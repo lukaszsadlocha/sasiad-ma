@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Core.ValueObjects;
 
@@ -20,12 +20,12 @@ public record Email
     {
         if (string.IsNullOrWhiteSpace(email))
         {
-            return Error.Validation(nameof(Email), "Email cannot be empty");
+            return Result.Fail("Email cannot be empty");
         }
 
         if (!EmailRegex.IsMatch(email))
         {
-            return Error.Validation(nameof(Email), "Invalid email format");
+            return Result.Fail("Invalid email format");
         }
 
         return new Email(email.ToLowerInvariant());

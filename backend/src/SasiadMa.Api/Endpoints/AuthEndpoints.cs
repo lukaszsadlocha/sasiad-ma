@@ -1,3 +1,4 @@
+using SasiadMa.Api.Extensions;
 using SasiadMa.Application.DTOs.Auth;
 using SasiadMa.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -40,10 +41,7 @@ public static class AuthEndpoints
         IAuthService authService)
     {
         var result = await authService.LoginAsync(request);
-        
-        return result.IsSuccess 
-            ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+        return result.ToIResult();
     }
 
     private static async Task<IResult> RegisterAsync(
@@ -54,7 +52,7 @@ public static class AuthEndpoints
         
         return result.IsSuccess 
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GoogleLoginAsync(
@@ -65,7 +63,7 @@ public static class AuthEndpoints
         
         return result.IsSuccess 
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> RefreshTokenAsync(
@@ -76,7 +74,7 @@ public static class AuthEndpoints
         
         return result.IsSuccess 
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> ConfirmEmailAsync(
@@ -87,6 +85,6 @@ public static class AuthEndpoints
         
         return result.IsSuccess 
             ? Results.Ok(new { message = "Email confirmed successfully" })
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 }

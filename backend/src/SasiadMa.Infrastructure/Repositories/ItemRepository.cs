@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
 using SasiadMa.Core.ValueObjects;
@@ -27,12 +27,12 @@ public class ItemRepository : IItemRepository
                 .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
 
             return item != null
-                ? Result<Item>.Success(item)
-                : Result<Item>.Failure(Error.NotFound("Item", id.ToString()));
+                ? Result.Ok(item)
+                : Result.Fail("Operation failed");
         }
         catch (Exception)
         {
-            return Result<Item>.Failure(Error.Unexpected("An error occurred while retrieving item"));
+            return Result.Fail("An error occurred while retrieving item");
         }
     }
 
@@ -42,11 +42,11 @@ public class ItemRepository : IItemRepository
         {
             _context.Items.Add(item);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<Item>.Success(item);
+            return Result.Ok(item);
         }
         catch (Exception)
         {
-            return Result<Item>.Failure(Error.Unexpected("An error occurred while creating item"));
+            return Result.Fail("An error occurred while creating item");
         }
     }
 
@@ -56,11 +56,11 @@ public class ItemRepository : IItemRepository
         {
             _context.Items.Update(item);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<Item>.Success(item);
+            return Result.Ok(item);
         }
         catch (Exception)
         {
-            return Result<Item>.Failure(Error.Unexpected("An error occurred while updating item"));
+            return Result.Fail("An error occurred while updating item");
         }
     }
 
@@ -71,7 +71,7 @@ public class ItemRepository : IItemRepository
             var item = await _context.Items.FindAsync(new object[] { id }, cancellationToken);
             if (item == null)
             {
-                return Result<bool>.Failure(Error.NotFound("Item", id.ToString()));
+                return Result.Fail("Operation failed");
             }
 
             // Soft delete - set IsActive to false
@@ -79,11 +79,11 @@ public class ItemRepository : IItemRepository
             item.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting item"));
+            return Result.Fail("An error occurred while deleting item");
         }
     }
 
@@ -98,11 +98,11 @@ public class ItemRepository : IItemRepository
                 .Where(i => i.CommunityId == communityId && i.IsActive)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Item>>.Success(items);
+            return Result.Ok<IEnumerable<Item>>(items);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving items by community"));
+            return Result.Fail<IEnumerable<Item>>("An error occurred while retrieving items by community");
         }
     }
 
@@ -117,11 +117,11 @@ public class ItemRepository : IItemRepository
                 .Where(i => i.OwnerId == ownerId && i.IsActive)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Item>>.Success(items);
+            return Result.Ok<IEnumerable<Item>>(items);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving items by owner"));
+            return Result.Fail<IEnumerable<Item>>("An error occurred while retrieving items by owner");
         }
     }
 
@@ -158,11 +158,11 @@ public class ItemRepository : IItemRepository
 
             var items = await query.ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Item>>.Success(items);
+            return Result.Ok<IEnumerable<Item>>(items);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while searching items"));
+            return Result.Fail<IEnumerable<Item>>("An error occurred while searching items");
         }
     }
 
@@ -176,11 +176,11 @@ public class ItemRepository : IItemRepository
                            i.IsAvailableForBorrow)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Item>>.Success(items);
+            return Result.Ok<IEnumerable<Item>>(items);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Item>>.Failure(Error.Unexpected("An error occurred while retrieving available items"));
+            return Result.Fail<IEnumerable<Item>>("An error occurred while retrieving available items");
         }
     }
 }

@@ -1,3 +1,4 @@
+using SasiadMa.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SasiadMa.Application.Interfaces;
 using SasiadMa.Application.DTOs.Item;
@@ -73,7 +74,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GetItemByIdAsync(
@@ -91,7 +92,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.NotFound(result.Error);
+            : Results.NotFound(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> CreateItemAsync(
@@ -109,7 +110,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/api/items/{result.Value.Id}", result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> UpdateItemAsync(
@@ -128,7 +129,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> DeleteItemAsync(
@@ -146,7 +147,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.NoContent()
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> SearchItemsAsync(
@@ -164,7 +165,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GetCategoriesAsync(IItemService itemService)
@@ -173,7 +174,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> UpdateItemAvailabilityAsync(
@@ -192,7 +193,7 @@ public static class ItemEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 }
 

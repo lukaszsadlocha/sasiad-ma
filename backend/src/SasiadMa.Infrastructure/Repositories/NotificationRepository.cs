@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Enums;
 using SasiadMa.Core.Interfaces;
@@ -24,12 +24,12 @@ public class NotificationRepository : INotificationRepository
                 .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
 
             return notification != null
-                ? Result<Notification>.Success(notification)
-                : Result<Notification>.Failure(Error.NotFound("Notification", id.ToString()));
+                ? Result.Ok(notification)
+                : Result.Fail("Operation failed");
         }
         catch (Exception)
         {
-            return Result<Notification>.Failure(Error.Unexpected("An error occurred while retrieving notification"));
+            return Result.Fail("An error occurred while retrieving notification");
         }
     }
 
@@ -39,11 +39,11 @@ public class NotificationRepository : INotificationRepository
         {
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<Notification>.Success(notification);
+            return Result.Ok(notification);
         }
         catch (Exception)
         {
-            return Result<Notification>.Failure(Error.Unexpected("An error occurred while creating notification"));
+            return Result.Fail("An error occurred while creating notification");
         }
     }
 
@@ -54,11 +54,11 @@ public class NotificationRepository : INotificationRepository
             notification.UpdatedAt = DateTime.UtcNow;
             _context.Notifications.Update(notification);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<Notification>.Success(notification);
+            return Result.Ok(notification);
         }
         catch (Exception)
         {
-            return Result<Notification>.Failure(Error.Unexpected("An error occurred while updating notification"));
+            return Result.Fail("An error occurred while updating notification");
         }
     }
 
@@ -69,16 +69,16 @@ public class NotificationRepository : INotificationRepository
             var notification = await _context.Notifications.FindAsync(new object[] { id }, cancellationToken);
             if (notification == null)
             {
-                return Result<bool>.Failure(Error.NotFound("Notification", id.ToString()));
+                return Result.Fail("Operation failed");
             }
 
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting notification"));
+            return Result.Fail("An error occurred while deleting notification");
         }
     }
 
@@ -91,11 +91,11 @@ public class NotificationRepository : INotificationRepository
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Notification>>.Success(notifications);
+            return Result.Ok<IEnumerable<Notification>>(notifications);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving notifications by user"));
+            return Result.Fail<IEnumerable<Notification>>("An error occurred while retrieving notifications by user");
         }
     }
 
@@ -108,11 +108,11 @@ public class NotificationRepository : INotificationRepository
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Notification>>.Success(notifications);
+            return Result.Ok<IEnumerable<Notification>>(notifications);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving unread notifications"));
+            return Result.Fail<IEnumerable<Notification>>("An error occurred while retrieving unread notifications");
         }
     }
 
@@ -125,11 +125,11 @@ public class NotificationRepository : INotificationRepository
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Notification>>.Success(notifications);
+            return Result.Ok<IEnumerable<Notification>>(notifications);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Notification>>.Failure(Error.Unexpected("An error occurred while retrieving notifications by type"));
+            return Result.Fail<IEnumerable<Notification>>("An error occurred while retrieving notifications by type");
         }
     }
 
@@ -140,7 +140,7 @@ public class NotificationRepository : INotificationRepository
             var notification = await _context.Notifications.FindAsync(new object[] { notificationId }, cancellationToken);
             if (notification == null)
             {
-                return Result<bool>.Failure(Error.NotFound("Notification", notificationId.ToString()));
+                return Result.Fail("Operation failed");
             }
 
             notification.IsRead = true;
@@ -148,11 +148,11 @@ public class NotificationRepository : INotificationRepository
             notification.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while marking notification as read"));
+            return Result.Fail("An error occurred while marking notification as read");
         }
     }
 
@@ -173,11 +173,11 @@ public class NotificationRepository : INotificationRepository
             }
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while marking all notifications as read"));
+            return Result.Fail("An error occurred while marking all notifications as read");
         }
     }
 }

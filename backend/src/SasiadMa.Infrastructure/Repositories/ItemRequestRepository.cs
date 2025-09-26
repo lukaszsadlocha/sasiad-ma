@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
 using SasiadMa.Infrastructure.Data;
@@ -23,12 +23,12 @@ public class ItemRequestRepository : IItemRequestRepository
                 .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
             return request != null
-                ? Result<ItemRequest>.Success(request)
-                : Result<ItemRequest>.Failure(Error.NotFound("ItemRequest", id.ToString()));
+                ? Result.Ok(request)
+                : Result.Fail("Operation failed");
         }
         catch (Exception)
         {
-            return Result<ItemRequest>.Failure(Error.Unexpected("An error occurred while retrieving item request"));
+            return Result.Fail("An error occurred while retrieving item request");
         }
     }
 
@@ -38,11 +38,11 @@ public class ItemRequestRepository : IItemRequestRepository
         {
             _context.ItemRequests.Add(itemRequest);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<ItemRequest>.Success(itemRequest);
+            return Result.Ok(itemRequest);
         }
         catch (Exception)
         {
-            return Result<ItemRequest>.Failure(Error.Unexpected("An error occurred while creating item request"));
+            return Result.Fail("An error occurred while creating item request");
         }
     }
 
@@ -52,11 +52,11 @@ public class ItemRequestRepository : IItemRequestRepository
         {
             _context.ItemRequests.Update(itemRequest);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<ItemRequest>.Success(itemRequest);
+            return Result.Ok(itemRequest);
         }
         catch (Exception)
         {
-            return Result<ItemRequest>.Failure(Error.Unexpected("An error occurred while updating item request"));
+            return Result.Fail("An error occurred while updating item request");
         }
     }
 

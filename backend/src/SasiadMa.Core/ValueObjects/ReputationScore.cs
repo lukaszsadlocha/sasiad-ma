@@ -1,4 +1,4 @@
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Core.ValueObjects;
 
@@ -18,17 +18,17 @@ public record ReputationScore
     {
         if (totalTransactions < 0)
         {
-            return Error.Validation(nameof(ReputationScore), "Total transactions cannot be negative");
+            return Result.Fail("Total transactions cannot be negative");
         }
 
         if (value < 0)
         {
-            return Error.Validation(nameof(ReputationScore), "Reputation value cannot be negative");
+            return Result.Fail("Reputation value cannot be negative");
         }
 
         if (value > totalTransactions * 5) // Max 5 points per transaction
         {
-            return Error.Validation(nameof(ReputationScore), "Reputation value exceeds maximum possible");
+            return Result.Fail("Reputation value exceeds maximum possible");
         }
 
         return new ReputationScore(value, totalTransactions);

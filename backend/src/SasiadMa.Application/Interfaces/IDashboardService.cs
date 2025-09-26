@@ -1,5 +1,5 @@
 using SasiadMa.Application.DTOs.Dashboard;
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Application.Interfaces;
 

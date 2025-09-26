@@ -1,6 +1,6 @@
 using SasiadMa.Application.DTOs.Dashboard;
 using SasiadMa.Application.Interfaces;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Interfaces;
 
 namespace SasiadMa.Application.Services;
@@ -54,11 +54,11 @@ public class DashboardService : IDashboardService
                 UnreadNotificationsCount = unreadNotificationsCount
             };
 
-            return Result<DashboardStatsDto>.Success(stats);
+            return Result.Ok(stats);
         }
         catch (Exception)
         {
-            return Result<DashboardStatsDto>.Failure(Error.Unexpected("An error occurred while retrieving dashboard statistics"));
+            return Result.Fail("An error occurred while retrieving dashboard statistics");
         }
     }
 }

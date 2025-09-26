@@ -1,4 +1,4 @@
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Core.ValueObjects;
 
@@ -29,7 +29,7 @@ public record ItemCategory
         var category = GetByCode(code);
         if (category == null)
         {
-            return Error.Validation(nameof(ItemCategory), $"Invalid category code: {code}");
+            return Result.Fail($"Invalid category code: {code}");
         }
 
         return category;

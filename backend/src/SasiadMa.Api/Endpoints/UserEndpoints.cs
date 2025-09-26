@@ -1,3 +1,4 @@
+using SasiadMa.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SasiadMa.Application.Interfaces;
 using System.Security.Claims;
@@ -39,6 +40,6 @@ public static class UserEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 }

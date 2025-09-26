@@ -1,5 +1,5 @@
 using SasiadMa.Application.Interfaces;
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Infrastructure.Services;
 
@@ -9,27 +9,27 @@ public class EmailService : IEmailService
     {
         // TODO: Implement email sending using actual email service
         // For now, just simulate success
-        return Task.FromResult(Result<bool>.Success(true));
+        return Task.FromResult(Result.Ok(true));
     }
 
     public Task<Result<bool>> SendBorrowRequestNotificationAsync(string ownerEmail, string borrowerName, string itemName)
     {
         // TODO: Implement email sending using actual email service
         // For now, just simulate success
-        return Task.FromResult(Result<bool>.Success(true));
+        return Task.FromResult(Result.Ok(true));
     }
 
     public Task<Result<bool>> SendBorrowApprovalNotificationAsync(string borrowerEmail, string ownerName, string itemName)
     {
         // TODO: Implement email sending using actual email service
         // For now, just simulate success
-        return Task.FromResult(Result<bool>.Success(true));
+        return Task.FromResult(Result.Ok(true));
     }
 
     public Task<Result<bool>> SendReturnReminderAsync(string borrowerEmail, string itemName, DateTime dueDate)
     {
         // TODO: Implement email sending using actual email service
         // For now, just simulate success
-        return Task.FromResult(Result<bool>.Success(true));
+        return Task.FromResult(Result.Ok(true));
     }
 }

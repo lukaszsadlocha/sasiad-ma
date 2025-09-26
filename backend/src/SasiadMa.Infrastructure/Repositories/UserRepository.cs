@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
 using SasiadMa.Infrastructure.Data;
@@ -23,12 +23,12 @@ public class UserRepository : IUserRepository
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
             return user != null
-                ? Result<User>.Success(user)
-                : Result<User>.Failure(Error.NotFound("User", id.ToString()));
+                ? Result.Ok(user)
+                : Result.Fail($"User with id {id} was not found");
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while retrieving user"));
+            return Result.Fail("An error occurred while retrieving user");
         }
     }
 
@@ -40,12 +40,12 @@ public class UserRepository : IUserRepository
                 .FirstOrDefaultAsync(u => u.Email.Value == email, cancellationToken);
 
             return user != null
-                ? Result<User>.Success(user)
-                : Result<User>.Failure(Error.NotFound("User", "email"));
+                ? Result.Ok(user)
+                : Result.Fail("User with email not found");
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while retrieving user"));
+            return Result.Fail("An error occurred while retrieving user");
         }
     }
 
@@ -57,12 +57,12 @@ public class UserRepository : IUserRepository
                 .FirstOrDefaultAsync(u => u.GoogleId == googleId, cancellationToken);
 
             return user != null
-                ? Result<User>.Success(user)
-                : Result<User>.Failure(Error.NotFound("User", "googleId"));
+                ? Result.Ok(user)
+                : Result.Fail("User with googleId not found");
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while retrieving user"));
+            return Result.Fail("An error occurred while retrieving user");
         }
     }
 
@@ -72,11 +72,11 @@ public class UserRepository : IUserRepository
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<User>.Success(user);
+            return Result.Ok(user);
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while creating user"));
+            return Result.Fail("An error occurred while creating user");
         }
     }
 
@@ -86,11 +86,11 @@ public class UserRepository : IUserRepository
         {
             _context.Users.Update(user);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<User>.Success(user);
+            return Result.Ok(user);
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while updating user"));
+            return Result.Fail("An error occurred while updating user");
         }
     }
 
@@ -101,16 +101,16 @@ public class UserRepository : IUserRepository
             var user = await _context.Users.FindAsync(new object[] { id }, cancellationToken);
             if (user == null)
             {
-                return Result<bool>.Failure(Error.NotFound("User", id.ToString()));
+                return Result.Fail($"User with id {id} was not found");
             }
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting user"));
+            return Result.Fail("An error occurred while deleting user");
         }
     }
 
@@ -122,11 +122,11 @@ public class UserRepository : IUserRepository
                 .Where(u => u.CommunityMemberships.Any(cm => cm.CommunityId == communityId && cm.IsActive))
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<User>>.Success(users);
+            return Result.Ok<IEnumerable<User>>(users);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<User>>.Failure(Error.Unexpected("An error occurred while retrieving community users"));
+            return Result.Fail("An error occurred while retrieving community users");
         }
     }
 
@@ -137,11 +137,11 @@ public class UserRepository : IUserRepository
             var exists = await _context.Users
                 .AnyAsync(u => u.Email.Value == email, cancellationToken);
 
-            return Result<bool>.Success(exists);
+            return Result.Ok(exists);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while checking email existence"));
+            return Result.Fail("An error occurred while checking email existence");
         }
     }
 
@@ -153,12 +153,12 @@ public class UserRepository : IUserRepository
                 .FirstOrDefaultAsync(u => u.EmailConfirmationToken == token, cancellationToken);
 
             return user != null
-                ? Result<User>.Success(user)
-                : Result<User>.Failure(Error.NotFound("User", "token"));
+                ? Result.Ok(user)
+                : Result.Fail("User with token not found");
         }
         catch (Exception)
         {
-            return Result<User>.Failure(Error.Unexpected("An error occurred while retrieving user"));
+            return Result.Fail("An error occurred while retrieving user");
         }
     }
 }

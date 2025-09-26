@@ -1,4 +1,4 @@
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Core.ValueObjects;
 
@@ -26,7 +26,7 @@ public record ItemCondition
         var condition = GetByCode(code);
         if (condition == null)
         {
-            return Error.Validation(nameof(ItemCondition), $"Invalid condition code: {code}");
+            return Result.Fail($"Invalid condition code: {code}");
         }
 
         return condition;

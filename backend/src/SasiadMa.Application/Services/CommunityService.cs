@@ -1,6 +1,6 @@
 using SasiadMa.Application.DTOs.Community;
 using SasiadMa.Application.Interfaces;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Interfaces;
 using System.Linq;
 
@@ -24,22 +24,22 @@ public class CommunityService : ICommunityService
             var communityResult = await _communityRepository.GetByIdAsync(id);
             if (!communityResult.IsSuccess)
             {
-                return Result<CommunityDto>.Failure(communityResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             // Check if user is a member of the community
             var isMember = await _communityRepository.IsUserMemberAsync(id, requestingUserId);
             if (!isMember.IsSuccess || !isMember.Value)
             {
-                return Result<CommunityDto>.Failure(Error.Forbidden("You are not a member of this community"));
+                return Result.Fail("Access forbidden");
             }
 
             var communityDto = MapToCommunityDto(communityResult.Value);
-            return Result<CommunityDto>.Success(communityDto);
+            return Result.Ok(communityDto);
         }
         catch (Exception)
         {
-            return Result<CommunityDto>.Failure(Error.Unexpected("An error occurred while retrieving community"));
+            return Result.Fail("An error occurred while retrieving community");
         }
     }
 
@@ -50,15 +50,15 @@ public class CommunityService : ICommunityService
             var communitiesResult = await _communityRepository.GetByUserIdAsync(userId);
             if (!communitiesResult.IsSuccess)
             {
-                return Result<IEnumerable<CommunityDto>>.Failure(communitiesResult.Error);
+                return Result.Fail<IEnumerable<CommunityDto>>("Operation failed");
             }
 
             var communityDtos = communitiesResult.Value.Select(MapToCommunityDto);
-            return Result<IEnumerable<CommunityDto>>.Success(communityDtos);
+            return Result.Ok<IEnumerable<CommunityDto>>(communityDtos);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<CommunityDto>>.Failure(Error.Unexpected("An error occurred while retrieving user communities"));
+            return Result.Fail<IEnumerable<CommunityDto>>("An error occurred while retrieving user communities");
         }
     }
 
@@ -69,7 +69,7 @@ public class CommunityService : ICommunityService
             // Validate request
             if (string.IsNullOrWhiteSpace(request.Name))
             {
-                return Result<CommunityDto>.Failure(Error.Validation("name", "Community name is required"));
+                return Result.Fail("Community name is required");
             }
 
             // Create community entity
@@ -93,35 +93,35 @@ public class CommunityService : ICommunityService
             var createResult = await _communityRepository.CreateAsync(community);
             if (!createResult.IsSuccess)
             {
-                return Result<CommunityDto>.Failure(createResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             // Add creator as admin member
             var memberResult = await _communityRepository.AddMemberAsync(community.Id, createdBy, isAdmin: true);
             if (!memberResult.IsSuccess)
             {
-                return Result<CommunityDto>.Failure(memberResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var communityDto = MapToCommunityDto(createResult.Value);
-            return Result<CommunityDto>.Success(communityDto);
+            return Result.Ok(communityDto);
         }
         catch (Exception)
         {
-            return Result<CommunityDto>.Failure(Error.Unexpected("An error occurred while creating community"));
+            return Result.Fail("An error occurred while creating community");
         }
     }
 
     public Task<Result<CommunityDto>> UpdateAsync(Guid id, UpdateCommunityRequest request, Guid userId)
     {
         // TODO: Implement community update
-        return Task.FromResult(Result<CommunityDto>.Failure(Error.Validation("feature", "Community update not yet implemented")));
+        return Task.FromResult(Result.Fail<CommunityDto>("Community update not yet implemented"));
     }
 
     public Task<Result<bool>> DeleteAsync(Guid id, Guid userId)
     {
         // TODO: Implement community deletion
-        return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Community deletion not yet implemented")));
+        return Task.FromResult(Result.Fail<bool>("Community deletion not yet implemented"));
     }
 
     public async Task<Result<bool>> JoinAsync(JoinCommunityRequest request, Guid userId)
@@ -131,14 +131,14 @@ public class CommunityService : ICommunityService
             // Validate request
             if (string.IsNullOrWhiteSpace(request.InvitationCode))
             {
-                return Result<bool>.Failure(Error.Validation("invitationCode", "Invitation code is required"));
+                return Result.Fail("Invitation code is required");
             }
 
             // Find community by invitation code
             var communityResult = await _communityRepository.GetByInvitationCodeAsync(request.InvitationCode);
             if (!communityResult.IsSuccess)
             {
-                return Result<bool>.Failure(Error.Validation("invitationCode", "Invalid invitation code"));
+                return Result.Fail("Invalid invitation code");
             }
 
             var community = communityResult.Value;
@@ -146,40 +146,40 @@ public class CommunityService : ICommunityService
             // Check if community is active
             if (!community.IsActive)
             {
-                return Result<bool>.Failure(Error.Validation("community", "Community is not active"));
+                return Result.Fail("Community is not active");
             }
 
             // Add user as member
             var memberResult = await _communityRepository.AddMemberAsync(community.Id, userId);
             if (!memberResult.IsSuccess)
             {
-                return Result<bool>.Failure(memberResult.Error);
+                return Result.Fail("Operation failed");
             }
 
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while joining community"));
+            return Result.Fail("An error occurred while joining community");
         }
     }
 
     public Task<Result<bool>> LeaveAsync(Guid communityId, Guid userId)
     {
         // TODO: Implement community leaving
-        return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Community leaving not yet implemented")));
+        return Task.FromResult(Result.Fail<bool>("Community leaving not yet implemented"));
     }
 
     public Task<Result<bool>> RemoveMemberAsync(Guid communityId, Guid memberUserId, Guid adminUserId)
     {
         // TODO: Implement member removal
-        return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Member removal not yet implemented")));
+        return Task.FromResult(Result.Fail<bool>("Member removal not yet implemented"));
     }
 
     public Task<Result<bool>> MakeMemberAdminAsync(Guid communityId, Guid memberUserId, Guid adminUserId)
     {
         // TODO: Implement making member admin
-        return Task.FromResult(Result<bool>.Failure(Error.Validation("feature", "Making member admin not yet implemented")));
+        return Task.FromResult(Result.Fail<bool>("Making member admin not yet implemented"));
     }
 
     private CommunityDto MapToCommunityDto(Core.Entities.Community community)
@@ -214,7 +214,7 @@ public class CommunityService : ICommunityService
             var isAdminResult = await _communityRepository.IsUserAdminAsync(communityId, userId);
             if (!isAdminResult.IsSuccess || !isAdminResult.Value)
             {
-                return Result<string>.Failure(Error.Forbidden("Only admins can generate invitation codes"));
+                return Result.Fail("Access forbidden");
             }
 
             // Generate new invitation code
@@ -223,14 +223,14 @@ public class CommunityService : ICommunityService
 
             if (!updateResult.IsSuccess)
             {
-                return Result<string>.Failure(updateResult.Error);
+                return Result.Fail("Operation failed");
             }
 
-            return Result<string>.Success(newCode);
+            return Result.Ok(newCode);
         }
         catch (Exception)
         {
-            return Result<string>.Failure(Error.Unexpected("An error occurred while generating invitation code"));
+            return Result.Fail("An error occurred while generating invitation code");
         }
     }
 
@@ -242,13 +242,13 @@ public class CommunityService : ICommunityService
             var isMemberResult = await _communityRepository.IsUserMemberAsync(communityId, requestingUserId);
             if (!isMemberResult.IsSuccess || !isMemberResult.Value)
             {
-                return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(Error.Forbidden("You are not a member of this community"));
+                return Result.Fail<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>("Access forbidden");
             }
 
             var membersResult = await _communityRepository.GetMembersAsync(communityId);
             if (!membersResult.IsSuccess)
             {
-                return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(membersResult.Error);
+                return Result.Fail<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>("Operation failed");
             }
 
             var memberDtos = membersResult.Value.Select(member => new SasiadMa.Application.DTOs.User.UserDto
@@ -260,11 +260,11 @@ public class CommunityService : ICommunityService
                 ProfileImageUrl = member.User?.ProfileImageUrl
             });
 
-            return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Success(memberDtos);
+            return Result.Ok<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>(memberDtos);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>.Failure(Error.Unexpected("An error occurred while retrieving community members"));
+            return Result.Fail<IEnumerable<SasiadMa.Application.DTOs.User.UserDto>>("An error occurred while retrieving community members");
         }
     }
 

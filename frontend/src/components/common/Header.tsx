@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
-import { Home, Users, Package, Bell, User, LogOut } from 'lucide-react';
+import { Home, Users, Package, Bell, User, LogOut, LayoutDashboard } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 
 const Header: React.FC = () => {
@@ -28,11 +28,12 @@ const Header: React.FC = () => {
           {/* Navigation */}
           {isAuthenticated ? (
             <nav className="flex items-center space-x-6">
-              <Link 
-                to="/dashboard" 
-                className="text-gray-700 hover:text-blue-600 transition-colors"
+              <Link
+                to="/dashboard"
+                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors"
               >
-                {t('header.dashboard')}
+                <LayoutDashboard className="h-4 w-4" />
+                <span>{t('header.dashboard')}</span>
               </Link>
               <Link 
                 to="/communities" 

@@ -1,4 +1,4 @@
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Application.Interfaces;
 

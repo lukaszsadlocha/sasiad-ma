@@ -1,6 +1,6 @@
 using SasiadMa.Application.DTOs.Item;
 using SasiadMa.Application.Interfaces;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Enums;
 using SasiadMa.Core.Interfaces;
@@ -26,7 +26,7 @@ public class ItemService : IItemService
             var itemResult = await _itemRepository.GetByIdAsync(id);
             if (!itemResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(itemResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var item = itemResult.Value;
@@ -35,15 +35,15 @@ public class ItemService : IItemService
             var isMemberResult = await _communityRepository.IsUserMemberAsync(item.CommunityId, userId);
             if (!isMemberResult.IsSuccess || !isMemberResult.Value)
             {
-                return Result<ItemDto>.Failure(Error.Forbidden("You must be a member of this community to view this item"));
+                return Result.Fail("Access forbidden");
             }
 
             var itemDto = MapToItemDto(item);
-            return Result<ItemDto>.Success(itemDto);
+            return Result.Ok(itemDto);
         }
         catch (Exception)
         {
-            return Result<ItemDto>.Failure(Error.Unexpected("An error occurred while retrieving the item"));
+            return Result.Fail("An error occurred while retrieving the item");
         }
     }
 
@@ -55,21 +55,21 @@ public class ItemService : IItemService
             var isMemberResult = await _communityRepository.IsUserMemberAsync(communityId, userId);
             if (!isMemberResult.IsSuccess || !isMemberResult.Value)
             {
-                return Result<IEnumerable<ItemDto>>.Failure(Error.Forbidden("You must be a member of this community to view its items"));
+                return Result.Fail<IEnumerable<ItemDto>>("Access forbidden");
             }
 
             var itemsResult = await _itemRepository.GetByCommunityIdAsync(communityId);
             if (!itemsResult.IsSuccess)
             {
-                return Result<IEnumerable<ItemDto>>.Failure(itemsResult.Error);
+                return Result.Fail<IEnumerable<ItemDto>>("Operation failed");
             }
 
             var itemDtos = itemsResult.Value.Select(MapToItemDto);
-            return Result<IEnumerable<ItemDto>>.Success(itemDtos);
+            return Result.Ok<IEnumerable<ItemDto>>(itemDtos);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<ItemDto>>.Failure(Error.Unexpected("An error occurred while retrieving community items"));
+            return Result.Fail<IEnumerable<ItemDto>>("An error occurred while retrieving community items");
         }
     }
 
@@ -80,15 +80,15 @@ public class ItemService : IItemService
             var itemsResult = await _itemRepository.GetByOwnerIdAsync(userId);
             if (!itemsResult.IsSuccess)
             {
-                return Result<IEnumerable<ItemDto>>.Failure(itemsResult.Error);
+                return Result.Fail<IEnumerable<ItemDto>>("Operation failed");
             }
 
             var itemDtos = itemsResult.Value.Select(MapToItemDto);
-            return Result<IEnumerable<ItemDto>>.Success(itemDtos);
+            return Result.Ok<IEnumerable<ItemDto>>(itemDtos);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<ItemDto>>.Failure(Error.Unexpected("An error occurred while retrieving user items"));
+            return Result.Fail<IEnumerable<ItemDto>>("An error occurred while retrieving user items");
         }
     }
 
@@ -102,7 +102,7 @@ public class ItemService : IItemService
                 var isMemberResult = await _communityRepository.IsUserMemberAsync(request.CommunityId.Value, userId);
                 if (!isMemberResult.IsSuccess || !isMemberResult.Value)
                 {
-                    return Result<IEnumerable<ItemDto>>.Failure(Error.Forbidden("You must be a member of this community to search its items"));
+                    return Result.Fail<IEnumerable<ItemDto>>("Access forbidden");
                 }
             }
 
@@ -113,7 +113,7 @@ public class ItemService : IItemService
 
             if (!searchResult.IsSuccess)
             {
-                return Result<IEnumerable<ItemDto>>.Failure(searchResult.Error);
+                return Result.Fail<IEnumerable<ItemDto>>("Operation failed");
             }
 
             var items = searchResult.Value;
@@ -131,11 +131,11 @@ public class ItemService : IItemService
             }
 
             var itemDtos = items.Select(MapToItemDto);
-            return Result<IEnumerable<ItemDto>>.Success(itemDtos);
+            return Result.Ok<IEnumerable<ItemDto>>(itemDtos);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<ItemDto>>.Failure(Error.Unexpected("An error occurred while searching items"));
+            return Result.Fail<IEnumerable<ItemDto>>("An error occurred while searching items");
         }
     }
 
@@ -146,14 +146,14 @@ public class ItemService : IItemService
             // Validate request
             if (string.IsNullOrWhiteSpace(request.Name))
             {
-                return Result<ItemDto>.Failure(Error.Validation("name", "Item name is required"));
+                return Result.Fail("Item name is required");
             }
 
             // Check if user is a member of the community
             var isMemberResult = await _communityRepository.IsUserMemberAsync(request.CommunityId, ownerId);
             if (!isMemberResult.IsSuccess || !isMemberResult.Value)
             {
-                return Result<ItemDto>.Failure(Error.Forbidden("You must be a member of this community to create items"));
+                return Result.Fail("Access forbidden");
             }
 
             // Parse category and condition
@@ -178,15 +178,15 @@ public class ItemService : IItemService
             var createResult = await _itemRepository.CreateAsync(item);
             if (!createResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(createResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var itemDto = MapToItemDto(createResult.Value);
-            return Result<ItemDto>.Success(itemDto);
+            return Result.Ok(itemDto);
         }
         catch (Exception)
         {
-            return Result<ItemDto>.Failure(Error.Unexpected("An error occurred while creating the item"));
+            return Result.Fail("An error occurred while creating the item");
         }
     }
 
@@ -197,7 +197,7 @@ public class ItemService : IItemService
             var itemResult = await _itemRepository.GetByIdAsync(id);
             if (!itemResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(itemResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var item = itemResult.Value;
@@ -205,7 +205,7 @@ public class ItemService : IItemService
             // Check if user is the owner
             if (item.OwnerId != userId)
             {
-                return Result<ItemDto>.Failure(Error.Forbidden("You can only update your own items"));
+                return Result.Fail("Access forbidden");
             }
 
             // Update fields if provided
@@ -247,15 +247,15 @@ public class ItemService : IItemService
             var updateResult = await _itemRepository.UpdateAsync(item);
             if (!updateResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(updateResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var itemDto = MapToItemDto(updateResult.Value);
-            return Result<ItemDto>.Success(itemDto);
+            return Result.Ok(itemDto);
         }
         catch (Exception)
         {
-            return Result<ItemDto>.Failure(Error.Unexpected("An error occurred while updating the item"));
+            return Result.Fail("An error occurred while updating the item");
         }
     }
 
@@ -266,7 +266,7 @@ public class ItemService : IItemService
             var itemResult = await _itemRepository.GetByIdAsync(id);
             if (!itemResult.IsSuccess)
             {
-                return Result<bool>.Failure(itemResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var item = itemResult.Value;
@@ -274,7 +274,7 @@ public class ItemService : IItemService
             // Check if user is the owner
             if (item.OwnerId != userId)
             {
-                return Result<bool>.Failure(Error.Forbidden("You can only delete your own items"));
+                return Result.Fail("Access forbidden");
             }
 
             var deleteResult = await _itemRepository.DeleteAsync(id);
@@ -282,7 +282,7 @@ public class ItemService : IItemService
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting the item"));
+            return Result.Fail("An error occurred while deleting the item");
         }
     }
 
@@ -293,7 +293,7 @@ public class ItemService : IItemService
             var itemResult = await _itemRepository.GetByIdAsync(id);
             if (!itemResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(itemResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var item = itemResult.Value;
@@ -301,7 +301,7 @@ public class ItemService : IItemService
             // Check if user is the owner
             if (item.OwnerId != userId)
             {
-                return Result<ItemDto>.Failure(Error.Forbidden("You can only update availability of your own items"));
+                return Result.Fail("Access forbidden");
             }
 
             item.Status = available ? ItemStatus.Available : ItemStatus.Unavailable;
@@ -310,15 +310,15 @@ public class ItemService : IItemService
             var updateResult = await _itemRepository.UpdateAsync(item);
             if (!updateResult.IsSuccess)
             {
-                return Result<ItemDto>.Failure(updateResult.Error);
+                return Result.Fail("Operation failed");
             }
 
             var itemDto = MapToItemDto(updateResult.Value);
-            return Result<ItemDto>.Success(itemDto);
+            return Result.Ok(itemDto);
         }
         catch (Exception)
         {
-            return Result<ItemDto>.Failure(Error.Unexpected("An error occurred while updating item availability"));
+            return Result.Fail("An error occurred while updating item availability");
         }
     }
 
@@ -328,11 +328,11 @@ public class ItemService : IItemService
         {
             await Task.CompletedTask; // To make this async method compile
             var categories = ItemCategory.GetAll().Select(c => c.Code);
-            return Result<IEnumerable<string>>.Success(categories);
+            return Result.Ok<IEnumerable<string>>(categories);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<string>>.Failure(Error.Unexpected("An error occurred while retrieving categories"));
+            return Result.Fail<IEnumerable<string>>("An error occurred while retrieving categories");
         }
     }
 

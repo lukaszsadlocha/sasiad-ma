@@ -1,4 +1,5 @@
 using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Enums;
 using SasiadMa.Core.ValueObjects;
 

@@ -1,5 +1,5 @@
+using FluentResults;
 using SasiadMa.Application.DTOs.Auth;
-using SasiadMa.Core.Common;
 
 namespace SasiadMa.Application.Interfaces;
 

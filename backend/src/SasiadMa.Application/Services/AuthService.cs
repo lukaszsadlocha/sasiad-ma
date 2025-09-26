@@ -1,7 +1,7 @@
 using SasiadMa.Application.DTOs.Auth;
 using SasiadMa.Application.DTOs.User;
 using SasiadMa.Application.Interfaces;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
 using SasiadMa.Core.ValueObjects;
@@ -37,19 +37,19 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailAsync(request.Email);
             if (!userResult.IsSuccess)
             {
-                return Result<LoginResponse>.Failure(Error.NotFound("User", "email"));
+                return Result.Fail("User with email not found");
             }
 
             var user = userResult.Value;
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return Result<LoginResponse>.Failure(Error.Validation("password", "Invalid email or password"));
+                return Result.Fail("Invalid email or password");
             }
 
             if (!user.IsActive)
             {
-                return Result<LoginResponse>.Failure(Error.Validation("isActive", "Account is deactivated"));
+                return Result.Fail("Account is deactivated");
             }
 
             // Update last login
@@ -67,11 +67,11 @@ public class AuthService : IAuthService
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
-            return Result<LoginResponse>.Success(response);
+            return Result.Ok(response);
         }
         catch (Exception)
         {
-            return Result<LoginResponse>.Failure(Error.Unexpected("An error occurred during login"));
+            return Result.Fail("An error occurred during login");
         }
     }
 
@@ -83,14 +83,14 @@ public class AuthService : IAuthService
             var existingUserResult = await _userRepository.GetByEmailAsync(request.Email);
             if (existingUserResult.IsSuccess)
             {
-                return Result<LoginResponse>.Failure(Error.Conflict("User with this email already exists"));
+                return Result.Fail("User with this email already exists");
             }
 
             // Create user
             var emailResult = Email.Create(request.Email);
             if (!emailResult.IsSuccess)
             {
-                return Result<LoginResponse>.Failure(emailResult.Error);
+                return Result.Fail("Invalid email format");
             }
 
             var user = new User
@@ -108,7 +108,7 @@ public class AuthService : IAuthService
             var createResult = await _userRepository.CreateAsync(user);
             if (!createResult.IsSuccess)
             {
-                return Result<LoginResponse>.Failure(createResult.Error);
+                return Result.Fail("Failed to create user");
             }
 
             // Send confirmation email
@@ -128,11 +128,11 @@ public class AuthService : IAuthService
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
-            return Result<LoginResponse>.Success(response);
+            return Result.Ok(response);
         }
         catch (Exception)
         {
-            return Result<LoginResponse>.Failure(Error.Unexpected("An error occurred during registration"));
+            return Result.Fail("An error occurred during registration");
         }
     }
 
@@ -140,14 +140,14 @@ public class AuthService : IAuthService
     {
         // This would integrate with Google OAuth
         // For now, return not implemented
-        return Task.FromResult(Result<LoginResponse>.Failure(Error.Validation("provider", "Google login not yet implemented")));
+        return Task.FromResult(Result.Fail<LoginResponse>("Google login not yet implemented"));
     }
 
     public Task<Result<LoginResponse>> RefreshTokenAsync(string refreshToken)
     {
         // This would validate and refresh the token
         // For now, return not implemented
-        return Task.FromResult(Result<LoginResponse>.Failure(Error.Validation("refreshToken", "Token refresh not yet implemented")));
+        return Task.FromResult(Result.Fail<LoginResponse>("Token refresh not yet implemented"));
     }
 
     public async Task<Result<bool>> ConfirmEmailAsync(string token)
@@ -157,7 +157,7 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailConfirmationTokenAsync(token);
             if (!userResult.IsSuccess)
             {
-                return Result<bool>.Failure(Error.NotFound("User", "token"));
+                return Result.Fail("User with token not found");
             }
 
             var user = userResult.Value;
@@ -167,12 +167,12 @@ public class AuthService : IAuthService
 
             var updateResult = await _userRepository.UpdateAsync(user);
             return updateResult.IsSuccess 
-                ? Result<bool>.Success(true) 
-                : Result<bool>.Failure(updateResult.Error);
+                ? Result.Ok(true) 
+                : Result.Fail("Failed to update user");
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred during email confirmation"));
+            return Result.Fail("An error occurred during email confirmation");
         }
     }
 
@@ -183,13 +183,13 @@ public class AuthService : IAuthService
             var userResult = await _userRepository.GetByEmailAsync(email);
             if (!userResult.IsSuccess)
             {
-                return Result<bool>.Failure(Error.NotFound("User", "User not found"));
+                return Result.Fail("User not found");
             }
 
             var user = userResult.Value;
             if (user.IsEmailConfirmed)
             {
-                return Result<bool>.Failure(Error.Validation(nameof(email),"Email is already confirmed"));
+                return Result.Fail("Email is already confirmed");
             }
 
             user.EmailConfirmationToken = Guid.NewGuid().ToString();
@@ -204,7 +204,7 @@ public class AuthService : IAuthService
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while resending confirmation email"));
+            return Result.Fail("An error occurred while resending confirmation email");
         }
     }
 

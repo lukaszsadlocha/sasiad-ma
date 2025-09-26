@@ -1,5 +1,5 @@
 using SasiadMa.Application.DTOs.Borrow;
-using SasiadMa.Core.Common;
+using FluentResults;
 
 namespace SasiadMa.Application.Interfaces;
 

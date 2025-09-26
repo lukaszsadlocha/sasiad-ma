@@ -1,3 +1,4 @@
+using SasiadMa.Api.Extensions;
 namespace SasiadMa.Api.Endpoints;
 
 public static class BorrowEndpoints

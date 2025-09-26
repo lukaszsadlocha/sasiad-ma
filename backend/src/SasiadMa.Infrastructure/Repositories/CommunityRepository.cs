@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Interfaces;
 using SasiadMa.Infrastructure.Data;
@@ -23,12 +23,12 @@ public class CommunityRepository : ICommunityRepository
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
             return community != null
-                ? Result<Community>.Success(community)
-                : Result<Community>.Failure(Error.NotFound("Community", id.ToString()));
+                ? Result.Ok(community)
+                : Result.Fail("Operation failed");
         }
         catch (Exception)
         {
-            return Result<Community>.Failure(Error.Unexpected("An error occurred while retrieving community"));
+            return Result.Fail("An error occurred while retrieving community");
         }
     }
 
@@ -40,12 +40,12 @@ public class CommunityRepository : ICommunityRepository
                 .FirstOrDefaultAsync(c => c.InvitationCode == invitationCode, cancellationToken);
 
             return community != null
-                ? Result<Community>.Success(community)
-                : Result<Community>.Failure(Error.NotFound("Community", "invitationCode"));
+                ? Result.Ok(community)
+                : Result.Fail("invitationCode");
         }
         catch (Exception)
         {
-            return Result<Community>.Failure(Error.Unexpected("An error occurred while retrieving community"));
+            return Result.Fail("An error occurred while retrieving community");
         }
     }
 
@@ -55,11 +55,11 @@ public class CommunityRepository : ICommunityRepository
         {
             _context.Communities.Add(community);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<Community>.Success(community);
+            return Result.Ok(community);
         }
         catch (Exception)
         {
-            return Result<Community>.Failure(Error.Unexpected("An error occurred while creating community"));
+            return Result.Fail("An error occurred while creating community");
         }
     }
 
@@ -82,11 +82,11 @@ public class CommunityRepository : ICommunityRepository
                     .Any(cm => cm.UserId == userId && cm.CommunityId == c.Id && cm.IsActive))
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<Community>>.Success(communities);
+            return Result.Ok<IEnumerable<Community>>(communities);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<Community>>.Failure(Error.Unexpected("An error occurred while retrieving user communities"));
+            return Result.Fail<IEnumerable<Community>>("An error occurred while retrieving user communities");
         }
     }
 
@@ -110,7 +110,7 @@ public class CommunityRepository : ICommunityRepository
 
             if (existingMembership != null)
             {
-                return Result<CommunityMember>.Failure(Error.Validation("membership", "User is already a member of this community"));
+                return Result.Fail("User is already a member of this community");
             }
 
             var membership = new CommunityMember
@@ -128,11 +128,11 @@ public class CommunityRepository : ICommunityRepository
             _context.CommunityMembers.Add(membership);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result<CommunityMember>.Success(membership);
+            return Result.Ok(membership);
         }
         catch (Exception)
         {
-            return Result<CommunityMember>.Failure(Error.Unexpected("An error occurred while adding member to community"));
+            return Result.Fail("An error occurred while adding member to community");
         }
     }
 
@@ -145,17 +145,17 @@ public class CommunityRepository : ICommunityRepository
 
             if (membership == null)
             {
-                return Result.Failure(Error.NotFound("Community membership", $"{communityId}-{userId}"));
+                return Result.Fail($"Member {userId} not found in community {communityId}");
             }
 
             _context.CommunityMembers.Remove(membership);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Ok();
         }
         catch (Exception)
         {
-            return Result.Failure(Error.Unexpected("An error occurred while removing member from community"));
+            return Result.Fail("An error occurred while removing member from community");
         }
     }
 
@@ -166,11 +166,11 @@ public class CommunityRepository : ICommunityRepository
             var isMember = await _context.CommunityMembers
                 .AnyAsync(cm => cm.CommunityId == communityId && cm.UserId == userId && cm.IsActive, cancellationToken);
 
-            return Result<bool>.Success(isMember);
+            return Result.Ok(isMember);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while checking membership"));
+            return Result.Fail("An error occurred while checking membership");
         }
     }
 
@@ -181,11 +181,11 @@ public class CommunityRepository : ICommunityRepository
             var isAdmin = await _context.CommunityMembers
                 .AnyAsync(cm => cm.CommunityId == communityId && cm.UserId == userId && cm.IsAdmin && cm.IsActive, cancellationToken);
 
-            return Result<bool>.Success(isAdmin);
+            return Result.Ok(isAdmin);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while checking admin status"));
+            return Result.Fail("An error occurred while checking admin status");
         }
     }
 
@@ -196,18 +196,18 @@ public class CommunityRepository : ICommunityRepository
             var community = await _context.Communities.FindAsync(new object[] { communityId }, cancellationToken);
             if (community == null)
             {
-                return Result<bool>.Failure(Error.NotFound("Community", communityId.ToString()));
+                return Result.Fail("Operation failed");
             }
 
             community.InvitationCode = newCode;
             community.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while updating invitation code"));
+            return Result.Fail("An error occurred while updating invitation code");
         }
     }
 
@@ -220,11 +220,11 @@ public class CommunityRepository : ICommunityRepository
                 .Where(cm => cm.CommunityId == communityId && cm.IsActive)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<CommunityMember>>.Success(members);
+            return Result.Ok<IEnumerable<CommunityMember>>(members);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<CommunityMember>>.Failure(Error.Unexpected("An error occurred while retrieving community members"));
+            return Result.Fail<IEnumerable<CommunityMember>>("An error occurred while retrieving community members");
         }
     }
 }

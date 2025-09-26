@@ -1,3 +1,4 @@
+using SasiadMa.Api.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SasiadMa.Application.Interfaces;
 using SasiadMa.Application.DTOs.Community;
@@ -65,7 +66,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> CreateCommunityAsync(
@@ -83,7 +84,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Created($"/api/communities/{result.Value.Id}", result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GetCommunityByIdAsync(
@@ -101,7 +102,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.NotFound(result.Error);
+            : Results.NotFound(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> JoinCommunityAsync(
@@ -119,7 +120,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(new { message = "Successfully joined community" })
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> LeaveCommunityAsync(
@@ -137,7 +138,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(new { message = "Successfully left community" })
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GenerateInvitationCodeAsync(
@@ -155,7 +156,7 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(new { invitationCode = result.Value })
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 
     private static async Task<IResult> GetCommunityMembersAsync(
@@ -173,6 +174,6 @@ public static class CommunityEndpoints
 
         return result.IsSuccess
             ? Results.Ok(result.Value)
-            : Results.BadRequest(result.Error);
+            : Results.BadRequest(result.Errors.FirstOrDefault()?.Message);
     }
 }

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SasiadMa.Core.Common;
+using FluentResults;
 using SasiadMa.Core.Entities;
 using SasiadMa.Core.Enums;
 using SasiadMa.Core.Interfaces;
@@ -24,12 +24,12 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                 .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
             return request != null
-                ? Result<BorrowRequest>.Success(request)
-                : Result<BorrowRequest>.Failure(Error.NotFound("BorrowRequest", id.ToString()));
+                ? Result.Ok(request)
+                : Result.Fail("Operation failed");
         }
         catch (Exception)
         {
-            return Result<BorrowRequest>.Failure(Error.Unexpected("An error occurred while retrieving borrow request"));
+            return Result.Fail("An error occurred while retrieving borrow request");
         }
     }
 
@@ -39,11 +39,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
         {
             _context.BorrowRequests.Add(borrowRequest);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<BorrowRequest>.Success(borrowRequest);
+            return Result.Ok(borrowRequest);
         }
         catch (Exception)
         {
-            return Result<BorrowRequest>.Failure(Error.Unexpected("An error occurred while creating borrow request"));
+            return Result.Fail("An error occurred while creating borrow request");
         }
     }
 
@@ -54,11 +54,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
             borrowRequest.UpdatedAt = DateTime.UtcNow;
             _context.BorrowRequests.Update(borrowRequest);
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<BorrowRequest>.Success(borrowRequest);
+            return Result.Ok(borrowRequest);
         }
         catch (Exception)
         {
-            return Result<BorrowRequest>.Failure(Error.Unexpected("An error occurred while updating borrow request"));
+            return Result.Fail("An error occurred while updating borrow request");
         }
     }
 
@@ -69,7 +69,7 @@ public class BorrowRequestRepository : IBorrowRequestRepository
             var borrowRequest = await _context.BorrowRequests.FindAsync(new object[] { id }, cancellationToken);
             if (borrowRequest == null)
             {
-                return Result<bool>.Failure(Error.NotFound("BorrowRequest", id.ToString()));
+                return Result.Fail("Operation failed");
             }
 
             // Instead of hard delete, cancel the request
@@ -77,11 +77,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
             borrowRequest.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
-            return Result<bool>.Success(true);
+            return Result.Ok(true);
         }
         catch (Exception)
         {
-            return Result<bool>.Failure(Error.Unexpected("An error occurred while deleting borrow request"));
+            return Result.Fail("An error occurred while deleting borrow request");
         }
     }
 
@@ -93,11 +93,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                 .Where(br => br.BorrowerId == borrowerId)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+            return Result.Ok<IEnumerable<BorrowRequest>>(requests);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by borrower"));
+            return Result.Fail<IEnumerable<BorrowRequest>>("An error occurred while retrieving borrow requests by borrower");
         }
     }
 
@@ -110,11 +110,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                 .Where(br => br.Item.OwnerId == lenderId)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+            return Result.Ok<IEnumerable<BorrowRequest>>(requests);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by lender"));
+            return Result.Fail<IEnumerable<BorrowRequest>>("An error occurred while retrieving borrow requests by lender");
         }
     }
 
@@ -126,11 +126,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                 .Where(br => br.ItemId == itemId)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+            return Result.Ok<IEnumerable<BorrowRequest>>(requests);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by item"));
+            return Result.Fail<IEnumerable<BorrowRequest>>("An error occurred while retrieving borrow requests by item");
         }
     }
 
@@ -142,11 +142,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                 .Where(br => br.Status == status)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+            return Result.Ok<IEnumerable<BorrowRequest>>(requests);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving borrow requests by status"));
+            return Result.Fail<IEnumerable<BorrowRequest>>("An error occurred while retrieving borrow requests by status");
         }
     }
 
@@ -160,11 +160,11 @@ public class BorrowRequestRepository : IBorrowRequestRepository
                            br.RequestedEndDate < currentDate)
                 .ToListAsync(cancellationToken);
 
-            return Result<IEnumerable<BorrowRequest>>.Success(requests);
+            return Result.Ok<IEnumerable<BorrowRequest>>(requests);
         }
         catch (Exception)
         {
-            return Result<IEnumerable<BorrowRequest>>.Failure(Error.Unexpected("An error occurred while retrieving overdue borrow requests"));
+            return Result.Fail<IEnumerable<BorrowRequest>>("An error occurred while retrieving overdue borrow requests");
         }
     }
 }
