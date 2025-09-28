@@ -35,6 +35,7 @@ public class CreateItemRequest
     public string Category { get; set; } = string.Empty;
     public string Condition { get; set; } = string.Empty;
     public Guid CommunityId { get; set; }
+    public List<string> ImageUrls { get; set; } = new();
 }
 
 public class UpdateItemRequest

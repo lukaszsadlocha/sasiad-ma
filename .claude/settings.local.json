@@ -26,7 +26,8 @@
       "Bash(findstr:*)",
       "Bash(tasklist:*)",
       "Bash(find:*)",
-      "Bash(xargs sed:*)"
+      "Bash(xargs sed:*)",
+      "Bash(/bashes)"
     ],
     "deny": [],
     "ask": []

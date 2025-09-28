@@ -3,8 +3,12 @@ import type { Item, CreateItemRequest, UpdateItemRequest, ItemSearchRequest } fr
 
 export const itemService = {
   getAll: async (communityId?: string): Promise<Item[]> => {
-    const url = communityId ? `/communities/${communityId}/items` : '/items';
+    const url = communityId ? '/items?communityId=' + communityId : '/items';
     return await api.get<Item[]>(url);
+  },
+
+  getByCommunityId: async (communityId: string): Promise<Item[]> => {
+    return await api.get<Item[]>(`/items?communityId=${communityId}`);
   },
 
   getById: async (id: string): Promise<Item> => {
@@ -25,10 +29,31 @@ export const itemService = {
 
   search: async (searchParams: ItemSearchRequest): Promise<Item[]> => {
     return await api.get<Item[]>('/items/search', {
-      params: searchParams,
+      params: {
+        communityId: searchParams.communityId,
+        searchTerm: searchParams.query,
+        category: searchParams.category,
+        status: searchParams.status,
+        availableOnly: searchParams.availableOnly,
+        pageNumber: searchParams.page || 1,
+        pageSize: searchParams.pageSize || 20
+      },
     });
   },
 
+  getMyItems: async (): Promise<Item[]> => {
+    return await api.get<Item[]>('/items');
+  },
+
+  updateAvailability: async (id: string, available: boolean): Promise<Item> => {
+    return await api.patch<Item>(`/items/${id}/availability`, { available });
+  },
+
+  getCategories: async (): Promise<string[]> => {
+    return await api.get<string[]>('/items/categories');
+  },
+
+  // Legacy methods for backward compatibility
   uploadImages: async (id: string, files: File[]): Promise<{ imageUrls: string[] }> => {
     const formData = new FormData();
     files.forEach(file => {
@@ -46,18 +71,6 @@ export const itemService = {
     await api.delete(`/items/${id}/images`, {
       data: { imageUrl },
     });
-  },
-
-  getMyItems: async (): Promise<Item[]> => {
-    return await api.get<Item[]>('/users/items');
-  },
-
-  updateAvailability: async (id: string, available: boolean): Promise<Item> => {
-    return await api.patch<Item>(`/items/${id}/availability`, { available });
-  },
-
-  getCategories: async (): Promise<string[]> => {
-    return await api.get<string[]>('/items/categories');
   },
 
   getPopularItems: async (communityId?: string): Promise<Item[]> => {

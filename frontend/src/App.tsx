@@ -28,6 +28,7 @@ import EmailConfirmation from './components/auth/EmailConfirmation';
 import CommunityList from './components/community/CommunityList';
 import CreateCommunityForm from './components/community/CreateCommunityForm';
 import ItemList from './components/item/ItemList';
+import CreateItemForm from './components/item/CreateItemForm';
 import UserProfile from './components/user/UserProfile';
 
 // Create a query client
@@ -103,6 +104,11 @@ const AppContent: React.FC = () => {
           <Route path="/items" element={
             <ProtectedRoute>
               <ItemList />
+            </ProtectedRoute>
+          } />
+          <Route path="/items/create" element={
+            <ProtectedRoute>
+              <CreateItemForm />
             </ProtectedRoute>
           } />
           <Route path="/items/:id" element={

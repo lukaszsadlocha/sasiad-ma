@@ -25,7 +25,7 @@ const ItemList: React.FC = () => {
   } = useApiQuery(
     ['items', currentCommunity?.id],
     () => itemService.getAll(currentCommunity?.id),
-    { enabled: !!currentCommunity }
+    { enabled: true }
   );
 
   const filteredItems = items.filter(item => {
@@ -40,18 +40,7 @@ const ItemList: React.FC = () => {
 
   const categories = Array.from(new Set(items.map(item => item.category).filter(Boolean)));
 
-  if (!currentCommunity) {
-    return (
-      <div className="text-center py-12">
-        <h2 className="text-lg font-medium text-gray-900 mb-2">
-          No Community Selected
-        </h2>
-        <p className="text-gray-600">
-          Please select a community to view items.
-        </p>
-      </div>
-    );
-  }
+  // Removed the community requirement check - items can be viewed across all communities
 
   if (isLoading) {
     return (
@@ -81,7 +70,7 @@ const ItemList: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Items in {currentCommunity.name}
+            {currentCommunity ? `Items in ${currentCommunity.name}` : 'All Items'}
           </h1>
           <p className="text-gray-600">
             {filteredItems.length} item{filteredItems.length !== 1 ? 's' : ''} available

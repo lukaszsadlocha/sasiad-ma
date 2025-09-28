@@ -2,16 +2,19 @@ export interface Item {
   id: string;
   name: string;
   description: string;
-  category: ItemCategory;
-  condition: ItemCondition;
-  status: ItemStatus;
+  category: string;
+  condition: string;
+  status: string;
   imageUrls: string[];
   communityId: string;
   communityName: string;
   ownerId: string;
   ownerName: string;
   ownerProfileImageUrl?: string;
-  isAvailable: boolean;
+  currentBorrowRequestId?: string;
+  currentBorrowerName?: string;
+  borrowedAt?: string;
+  dueDate?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,8 +22,8 @@ export interface Item {
 export interface CreateItemRequest {
   name: string;
   description: string;
-  category: ItemCategory;
-  condition: ItemCondition;
+  category: string;
+  condition: string;
   communityId: string;
   imageUrls?: string[];
 }
@@ -28,17 +31,16 @@ export interface CreateItemRequest {
 export interface UpdateItemRequest {
   name?: string;
   description?: string;
-  category?: ItemCategory;
-  condition?: ItemCondition;
-  status?: ItemStatus;
-  imageUrls?: string[];
+  category?: string;
+  condition?: string;
+  status?: string;
 }
 
 export interface ItemSearchRequest {
   query?: string;
-  category?: ItemCategory;
-  condition?: ItemCondition;
-  status?: ItemStatus;
+  category?: string;
+  condition?: string;
+  status?: string;
   communityId?: string;
   availableOnly?: boolean;
   page?: number;

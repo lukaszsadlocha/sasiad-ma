@@ -175,6 +175,32 @@ public class ItemService : IItemService
                 UpdatedAt = DateTime.UtcNow
             };
 
+            // Create item images if provided
+            if (request.ImageUrls?.Any() == true)
+            {
+                var itemImages = new List<ItemImage>();
+                for (int i = 0; i < request.ImageUrls.Count; i++)
+                {
+                    var imageUrl = request.ImageUrls[i];
+                    if (!string.IsNullOrWhiteSpace(imageUrl))
+                    {
+                        var itemImage = new ItemImage
+                        {
+                            Id = Guid.NewGuid(),
+                            ItemId = item.Id,
+                            Url = imageUrl.Trim(),
+                            Alt = $"Image of {item.Name}",
+                            IsPrimary = i == 0, // First image is primary
+                            Order = i + 1,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        };
+                        itemImages.Add(itemImage);
+                    }
+                }
+                item.Images = itemImages;
+            }
+
             var createResult = await _itemRepository.CreateAsync(item);
             if (!createResult.IsSuccess)
             {

@@ -83,6 +83,7 @@ const ItemsPage: React.FC = () => {
 
   const isOwner = item.ownerId === user?.id;
   const hasImages = item.imageUrls && item.imageUrls.length > 0;
+  const isAvailable = item.status === 'Available';
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -323,7 +324,7 @@ const ItemsPage: React.FC = () => {
 
             {/* Actions */}
             <div className="space-y-3">
-              {!isOwner && item.status === 'Available' && (
+              {!isOwner && isAvailable && (
                 <button
                   onClick={() => navigate(`/items/${item.id}/request`)}
                   className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
